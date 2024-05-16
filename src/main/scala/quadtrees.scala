@@ -14,14 +14,14 @@ object Quadtrees {
     * @param length le nombre de pixels de longueur de l'image.
     * @return l'image de longueur length basée du quadtree qt.
     */
-  def quadtree_to_image(qt: QT, show_grid: Boolean, length: Int): Image = {
+  def quadtree_to_image(qt: QT, show_grid: Boolean, length: Float): Image = {
 
     qt match {
 
       // Cas de base : toute la zone n'est qu'une seule couleur.
       case C(c) => {
 
-        val img_unicolor: Image = FillColor(Rectangle(length.toFloat, length.toFloat), c)
+        val img_unicolor: Image = FillColor(Rectangle(length, length), c)
         val line_color: Color = if show_grid then RED else c
         LineColor(img_unicolor, line_color)
 

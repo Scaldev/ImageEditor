@@ -12,7 +12,7 @@ import Quadtrees.*
   */
 case class State(
     quadtree: QT,
-    length: Int,
+    length: Float,
     show_grid: Boolean,
     stop: Boolean
 )
@@ -31,7 +31,7 @@ object Appli extends Universe[State] {
 
   // Paramètres par défaut à l'initialisation.
 
-  val DEFAULT_IMG_LENGTH: Int = 512
+  val DEFAULT_IMG_LENGTH: Float = 512.0
 
   val DEFAULT_QUADTREE: QT =
     N(
@@ -83,7 +83,7 @@ object Appli extends Universe[State] {
       // Doubler la taille de l'image.
       case KeyPressed(KeyAscii('+')) => {
 
-        val new_length: Int = math.min(HEIGHT, s.length * 2)
+        val new_length: Float = math.min(HEIGHT, (s.length * 2).toInt).toFloat
         State(s.quadtree, new_length, s.show_grid, s.stop)
 
       }
@@ -91,7 +91,7 @@ object Appli extends Universe[State] {
       // Diviser par 2 la taille de l'image.
       case KeyPressed(KeyAscii('-')) => {
 
-        val new_length: Int = math.max(1, s.length / 2)
+        val new_length: Float = math.max(1, (s.length / 2).toInt).toFloat
         State(s.quadtree, new_length, s.show_grid, s.stop)
 
       }
