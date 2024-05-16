@@ -26,13 +26,13 @@ Le fichier `quadtrees.scala` contient la création du type algébrique `QT` repr
 A la création de l'Univers, l'utilisateur doit spécifier :
 
 - le quadtree a visualiser.
-- l'ordre de la taille de l'image, correspondant à la puissance $n$ telle que la fenêtre sera de longueur et de largeur $2^n$.
+- l'ordre de la taille de l'image, correspondant à la puissance $n$ telle que l'image sera de longueur et de largeur $2^n$.
 
 Ci-dessous, un exemple minimal de création d'Univers via l'application.
 
 ```scala
 /* Exemple de création d'univers
-   Ici, la fenêtre sera un écran blanc de taille 512x512. */
+   Ici, l'image sera un carré blanc de longueur 512. */
 val quadtree: QT = C(WHITE)
 val size_order: Int = 9
 bigbang(Application(quadtree, size_order))

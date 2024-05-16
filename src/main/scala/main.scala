@@ -16,9 +16,11 @@ object ProgrammeUtilisateur extends App {
   )
 
   /**
-    * La puissance de 2 telle que la fenêtre sera de longueur
+    * La puissance de 2 telle que l'image sera de longueur
     * et de largeur 2^size_order pixels.
-    * @example size_order = 9 => fenêtre de 512x512 pixels.
+    * @example size_order = 9 => image de 512x512 pixels.
+    * @note si size_order est "raisonnable", la fenêtre et
+    *       l'image seront de même taille.
     */
   val size_order: Int = 9
 

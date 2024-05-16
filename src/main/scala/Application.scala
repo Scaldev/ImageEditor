@@ -40,7 +40,7 @@ class Application(quadtree: QT, size_order: Int) extends Universe[State] {
   /** @return l'état initial du jeu.
     */
   def init: State = {
-    State(quadtree, false, false)
+    State(false, false)
   }
 
   /** @param s l'état de l'univers.
