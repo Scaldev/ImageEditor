@@ -50,14 +50,15 @@ object Quadtrees {
       // Cas récursif : diviser la zone en 4 sous-zones, puis régner (les réunir).
       case N(no, ne, se, so) => {
 
+        // Déterminer les images des 4 sous-zones.
         val img_no: Image = quadtree_to_image(no, show_grid, length / 2)
         val img_ne: Image = quadtree_to_image(ne, show_grid, length / 2)
         val img_se: Image = quadtree_to_image(se, show_grid, length / 2)
         val img_so: Image = quadtree_to_image(so, show_grid, length / 2)
 
+        // Assembler les images des sous-zones.
         val img_top: Image = Beside(img_no, img_ne)
-        val img_bot: Image = Beside(img_so, img_se)
-        
+        val img_bot: Image = Beside(img_so, img_se)     
         Below(img_top, img_bot)
 
       }

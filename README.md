@@ -10,49 +10,57 @@
 
 L'application permet d'effectuer toutes les fonctionnalités d'une version 0.
 
-### A. <u>Quadtrees.</u>
+### A. <u>Structure du projet et quadtrees.</u>
 
-L'image affichée est représentée dans le code par le quadtree `DEFAULT_QUADTREE`. Il est de type `QT` (QuadTree), défini comme étant :
+Le fichier `Main.scala` correspond au côté utilisateur.
 
-- soit `C(c: Color)`, une feuille représentant une couleur.
-- soit `N(no: QT, ne: QT, se: QT, so: QT)`, un noeud interne sans couleur déterminée, possédant 4 sous-quadtrees où chacun représente un quart de zone.
+Le fichier `Application.scala` correspond au fichier principal de l'application de manipulation d'images. C'est dans celui-ci qu'est défini l'Univers.
 
-### B. <u>Grille de subdivisions.</u>
+Le fichier `Quadtrees.scala` contient la création du type algébrique `QT` représentant les quadtrees, ainsi que des fonctions en lien avec ce type. Le type `QT` est définit comme étant :
 
-Appuyer sur la touche `g` affiche ou cache la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
+- soit `C(c: Color)`, une feuille contenant une seule valeur : sa couleur, représentée par le type `Color` de Scribble.
+- soit `N(no: QT, ne: QT, se: QT, so: QT)`, un noeud interne possédant 4 sous-quadtrees où chacun représente un quart de zone.
+
+### B. <u>Lancement et arrêt.</u>
+
+A la création de l'Univers, l'utilisateur doit spécifier :
+
+- le quadtree a visualiser.
+- l'ordre de la taille de l'image, correspondant à la puissance $n$ telle que la fenêtre sera de longueur et de largeur $2^n$.
+
+Ci-dessous, un exemple minimal de création d'Univers via l'application.
+
+```scala
+/* Exemple de création d'univers
+   Ici, la fenêtre sera un écran blanc de taille 512x512. */
+val quadtree: QT = C(WHITE)
+val size_order: Int = 9
+bigbang(Application(quadtree, size_order))
+```
+
+Appuyer sur la touche `x` stoppe l'application.
+
+### C. <u>Grille de subdivisions.</u>
+
+Appuyer sur la touche `g` affiche et cache (selon le mode courant) la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
 
 <img style="display: block; margin: auto; height: 512px;" src="images/grid.png">
 
 <center>
 
-*Figure 1 : grille de subdivisions affichée.*
+*Figure 1 : image d'un quadtree où la grille des subdivisions est visible.*
 
 </center>
 
 <br>
 
-### C. <u>Dimensions de l'image.</u>
+## II. Développement du projet.
 
-Appuyer sur les touches `+` (resp. `-`) multiple (resp. divise) par 2 les dimensions de l'image produite.
+### A. <u>Avancement.</u>
 
-<img style="display: block; margin: auto; height: 512px;" src="images/zoom.png">
+Toutes les fonctionnalités demandées pour la version 0 ont été implémentées. Des tests ont également été implémentés pour vérifier la validité des fonctions au coeur du code.
 
-<center>
-
-*Figure 2 : dézoome d'un facteur 4 de l'image produite.*
-
-</center>
-
-<br>
-
-### D. <u>Arrêt de l'application.</u>
-
-Appuyer sur la touche `x` stoppe l'application.
-
-## II. Avancement et difficultés.
-
-Toutes les fonctionnalités demandées pour la version 0 ont été implémentées.
-
+### B. <u>Difficultés.</u>
 
 Aucune difficulté particulière n'a été rencontrée.
 

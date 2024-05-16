@@ -5,19 +5,15 @@ import Quadtrees.*
 
 /**
   * L'état de l'univers, définit comme étant :
-  * - quadtree : la représentation sous forme d'arbre de l'image affichée.
-  * - length : la longueur (et largeur) de l'image affichée.
   * - show_grid : si la grille des subdivisions est affichée ou non.
   * - stop : si l'univers est arrêté ou non.
   */
 case class State(
-    quadtree: QT,
-    length: Float,
     show_grid: Boolean,
     stop: Boolean
 )
 
-object Appli extends Universe[State] {
+class Application(quadtree: QT, size_order: Int) extends Universe[State] {
 
   // **************************************************************************** \\
   // *                          VARIABLES GLOBALES                              * \\
@@ -25,22 +21,14 @@ object Appli extends Universe[State] {
 
   // Paramètres de la fenêtre de jeu.
 
-  val HEIGHT: Int = 512
-  val WIDTH: Int = 512
+  if size_order < 1 then
+    throw Exception("Invalid input : size_order doit être strictement positive.")
+
+  val length: Float = math.pow(2.0, size_order.toDouble).toFloat
+  val HEIGHT: Int = length.toInt
+  val WIDTH: Int = length.toInt
+
   val name: String = "Quadtrees"
-
-  // Paramètres par défaut à l'initialisation.
-
-  val DEFAULT_IMG_LENGTH: Float = 512.0
-
-  val DEFAULT_QUADTREE: QT =
-    N(
-      C(BLACK),
-      N(C(BLACK), C(BLACK), C(WHITE), C(WHITE)),
-      C(WHITE),
-      N(C(BLACK), C(WHITE), C(WHITE), C(WHITE))
-    )
-
 
   // **************************************************************************** \\
   // *                          FONCTIONS PUBLIQUES                             * \\
@@ -49,28 +37,21 @@ object Appli extends Universe[State] {
   /** @return l'état initial du jeu.
     */
   def init: State = {
-
-    State(DEFAULT_QUADTREE, DEFAULT_IMG_LENGTH, false, false)
-
+    State(quadtree, false, false)
   }
 
   /** @param s l'état de l'univers.
     * @return l'affichage de l'image en fonction de l'état de l'univers s.
     */
   def toImage(s: State): Image = {
-
-    val e = quadtree_to_image(s.quadtree, s.show_grid, s.length)
-    println(e)
-    e
+    quadtree_to_image(quadtree, s.show_grid, length)
   }
 
   /** @param s l'état de l'univers.
     * @return true ssi le joueur a appuyé sur "x".
     */
   def stopWhen(s: State): Boolean = {
-
     s.stop == true
-
   }
 
   /** @param s l'état de l'univers.
@@ -81,38 +62,17 @@ object Appli extends Universe[State] {
 
     e match {
 
-      // Doubler la taille de l'image.
-      case KeyPressed(KeyAscii('+')) => {
-
-        val new_length: Float = math.min(HEIGHT, (s.length * 2).toInt).toFloat
-        State(s.quadtree, new_length, s.show_grid, s.stop)
-
-      }
-
-      // Diviser par 2 la taille de l'image.
-      case KeyPressed(KeyAscii('-')) => {
-
-        val new_length: Float = math.max(1, (s.length / 2).toInt).toFloat
-        State(s.quadtree, new_length, s.show_grid, s.stop)
-
-      }
-
       // Afficher / cacher la grille des subdivisions.
       case KeyPressed(KeyAscii('g')) => {
-
-        val new_show_grid: Boolean = !s.show_grid
-        State(s.quadtree, s.length, new_show_grid, s.stop)
-
+        State(!s.show_grid, s.stop)
       }
 
       // Arrêter l'univers.
       case KeyPressed(KeyAscii('x')) => {
-
-        State(s.quadtree, s.length, s.show_grid, true)
-
+        State(s.show_grid, true)
       }
 
-      // Pour les autres événements : ne rien faire.
+      // Ne rien modifier.
       case _ => s
 
     }
