@@ -1,0 +1,6 @@
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(compile /IntFrac, Some(9272a840-077d-4a38-8221-04e8ec6f7136), Some(CommandSource(console0)))[0m
+[0m[[0m[31merror[0m] [0m[0mNot a valid key: IntFrac[0m
+[0m[[0m[31merror[0m] [0m[0mcompile /IntFrac[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[0mdebug[0m] [0m[0m> Exec(shell, None, None)[0m
+[0m[[0m[0minfo[0m] [0m[0mshutting down sbt server[0m
