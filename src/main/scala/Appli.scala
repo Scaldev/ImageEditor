@@ -59,8 +59,9 @@ object Appli extends Universe[State] {
     */
   def toImage(s: State): Image = {
 
-    quadtree_to_image(s.quadtree, s.show_grid, s.length)
-
+    val e = quadtree_to_image(s.quadtree, s.show_grid, s.length)
+    println(e)
+    e
   }
 
   /** @param s l'état de l'univers.
