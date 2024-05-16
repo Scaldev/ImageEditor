@@ -1,8 +1,9 @@
-package PRO2.tp4
+package PRO2.projet
 
 import fr.istic.scribble.*
 
 object ProgrammeUtilisateur extends App {
 
-  bigbang(Quadtrees)
+  bigbang(Appli)
+  
 }

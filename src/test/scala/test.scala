@@ -1,4 +1,4 @@
-package PRO2.tp4
+package PRO2.projet
 
 class MySuite extends munit.FunSuite {
 

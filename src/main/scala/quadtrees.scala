@@ -1,42 +1,12 @@
-package PRO2.tp4
+package PRO2.projet
 
 import fr.istic.scribble.*
 
-private sealed trait QT
-private case class C(c: Color) extends QT
-private case class N(no: QT, ne: QT, se: QT, so: QT) extends QT
+object Quadtrees {
 
-private case class State(
-    quadtree: QT,
-    length: Int,
-    show_grid: Boolean,
-    stop: Boolean
-)
-
-object Quadtrees extends Universe[State] {
-
-  // **************************************************************************** \\
-  // *                          VARIABLES GLOBALES                              * \\
-  // **************************************************************************** \\
-
-  // Paramètres de la fenêtre de jeu.
-  val HEIGHT: Int = 512
-  val WIDTH: Int = 512
-  val name: String = "Quadtrees"
-
-  val DEFAULT_IMG_LENGTH: Int = 512
-
-  val DEFAULT_QUADTREE: QT =
-    N(
-      C(BLACK),
-      N(C(BLACK), C(BLACK), C(WHITE), C(WHITE)),
-      C(WHITE),
-      N(C(BLACK), C(WHITE), C(WHITE), C(WHITE))
-    )
-
-  // **************************************************************************** \\
-  // *                          FONCTIONS PRIVÉES                               * \\
-  // **************************************************************************** \\
+  sealed trait QT
+  case class C(c: Color) extends QT
+  case class N(no: QT, ne: QT, se: QT, so: QT) extends QT
 
   /**
     * @param qt le quadtree représentant une image.
@@ -44,7 +14,7 @@ object Quadtrees extends Universe[State] {
     * @param length le nombre de pixels de longueur de l'image.
     * @return l'image de longueur length basée du quadtree qt.
     */
-  private def quadtree_to_image(qt: QT, show_grid: Boolean, length: Int): Image = {
+  def quadtree_to_image(qt: QT, show_grid: Boolean, length: Int): Image = {
 
     qt match {
 
@@ -71,70 +41,9 @@ object Quadtrees extends Universe[State] {
 
         img_all
       }
-    }
-
-  }
-
-  // **************************************************************************** \\
-  // *                          FONCTIONS PUBLIQUES                             * \\
-  // **************************************************************************** \\
-
-  /** @return l'état initial du jeu.
-    */
-  def init: State = {
-
-    State(DEFAULT_QUADTREE, DEFAULT_IMG_LENGTH, false, false)
-
-  }
-
-  /** @param s l'état de jeu.
-    * @return l'affichage du jeu en fonction de l'état de jeu donné.
-    */
-  def toImage(s: State): Image = {
-
-    quadtree_to_image(s.quadtree, s.show_grid, s.length)
-
-  }
-
-  /** @param s l'état de jeu.
-    * @return true ssi le joueur a appuyé sur "x".
-    */
-  def stopWhen(s: State): Boolean = {
-    s.stop == true
-  }
-
-  /** @param s l'état de jeu.)
-    * @param e un événement.
-    * @return le nouvel état de jeu en fonction de l'événement e.
-    */
-  def react(s: State, e: Event): State = {
-
-    e match {
-
-      // Dimensions de la fenêtre
-      case KeyPressed(KeyAscii('+')) => {
-        State(s.quadtree, math.min(HEIGHT, s.length * 2), s.show_grid, s.stop)
-      }
-
-      case KeyPressed(KeyAscii('-')) => {
-        State(s.quadtree, math.max(1, s.length / 2), s.show_grid, s.stop)
-      }
-
-      // Show grid
-      case KeyPressed(KeyAscii('g')) => {
-        State(s.quadtree, s.length, !s.show_grid, s.stop)
-      }
-
-      // End
-      case KeyPressed(KeyAscii('x')) => {
-        State(s.quadtree, s.length, s.show_grid, true)
-      }
-
-      case _ => {
-        s
-      }
 
     }
 
   }
+
 }
