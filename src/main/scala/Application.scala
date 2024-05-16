@@ -7,6 +7,9 @@ import Quadtrees.*
   * L'état de l'univers, définit comme étant :
   * - show_grid : si la grille des subdivisions est affichée ou non.
   * - stop : si l'univers est arrêté ou non.
+  * 
+  * Remarque : dans cette version 0, il n'y a pas besoin de mettre le quadtree
+  * dans le State car celui-ci ne change jamais. Cela changera dans la version 1.
   */
 case class State(
     show_grid: Boolean,

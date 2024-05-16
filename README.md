@@ -12,11 +12,11 @@ L'application permet d'effectuer toutes les fonctionnalités d'une version 0.
 
 ### A. <u>Structure du projet et quadtrees.</u>
 
-Le fichier `Main.scala` correspond au côté utilisateur.
+Le fichier `main.scala` correspond au côté utilisateur.
 
-Le fichier `Application.scala` correspond au fichier principal de l'application de manipulation d'images. C'est dans celui-ci qu'est défini l'Univers.
+Le fichier `application.scala` correspond au fichier principal de l'application de manipulation d'images. C'est dans celui-ci qu'est défini l'Univers.
 
-Le fichier `Quadtrees.scala` contient la création du type algébrique `QT` représentant les quadtrees, ainsi que des fonctions en lien avec ce type. Le type `QT` est définit comme étant :
+Le fichier `quadtrees.scala` contient la création du type algébrique `QT` représentant les quadtrees, ainsi que des fonctions en lien avec ce type. Le type `QT` est définit comme étant :
 
 - soit `C(c: Color)`, une feuille contenant une seule valeur : sa couleur, représentée par le type `Color` de Scribble.
 - soit `N(no: QT, ne: QT, se: QT, so: QT)`, un noeud interne possédant 4 sous-quadtrees où chacun représente un quart de zone.
