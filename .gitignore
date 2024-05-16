@@ -1,5 +1,9 @@
-# ignore vscode
-.vscode/*
+# ignore config files
 
-#ignore metals
-.metals
+.bloop/
+.bsp/
+.vscode/
+.metals/
+target
+
+# ignore
