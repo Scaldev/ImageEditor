@@ -27,7 +27,7 @@ L'interface contient les fonctionnalités suivantes (voir le fichier source pour
 trait IntQuadtrees {
 
   // convertit un quadtree en une image Scribble.
-  def quadtree_to_image(qt: QT, show_grid: Boolean, size_order: Int): Image
+  def quadtree_to_image(qt: QT, grid: Boolean, size_order: Int): Image
 
   // compresse un quadtree.
   def compress(qt: QT): QT
@@ -57,7 +57,7 @@ Le fichier `Main.scala` correspond au côté utilisateur. Il est lié à un fich
 Utiliser la fonction `quadtree_to_imag` nécessite de donner en paramètre :
 
 - `quadtree` le quadtree a visualiser.
-- `show_grid` un booléen spécifiant si on affiche la grille des subdivisions (`true`) ou non (`false`).
+- `grid` un booléen spécifiant si on affiche la grille des subdivisions (`true`) ou non (`false`).
 - `size_order` l'ordre de la taille de l'image, correspondant à la puissance $n$ telle que l'image sera de longueur et de largeur $2^n$.
 
 Ci-dessous, un exemple minimal de création d'Univers via l'interface.
@@ -68,17 +68,17 @@ Ci-dessous, un exemple minimal de création d'Univers via l'interface.
 val serv_vQT: IntQuadtrees = ???
 
 val quadtree: QT = C(WHITE)
-val show_grid: Boolean = true
+val grid: Boolean = true
 val size_order: Int = 9
 
-val image: Image = serv_vQT.quadtree_to_image(quadtree, show_grid, size_order)
+val image: Image = serv_vQT.quadtree_to_image(quadtree, grid, size_order)
 
 draw(image)
 ```
 
 ### 2. <u>Grille de subdivisions.</u>
 
-Paramétrer `show_grid` comme valant `true` (resp. `false`) affiche (resp. cache) la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
+Paramétrer `grid` comme valant `true` (resp. `false`) affiche (resp. cache) la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
 
 <img style="display: block; margin: auto; height: 512px;" src="images/grid.png">
 
@@ -104,7 +104,7 @@ On peut également enchaîner les transformations avec la fonction `transforms`.
 val transfos = ColorLighten :: ColorLighten :: ColorLighten :: ColorLighten :: Nil
 val qt = serv_QT.transforms(quadtree, transfos)
 
-val image = serv_QT.quadtree_to_image(qt, show_grid, size_order)
+val image = serv_QT.quadtree_to_image(qt, grid, size_order)
 ```
 
 ## III. Développement du projet.

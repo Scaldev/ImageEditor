@@ -2,17 +2,10 @@ package PRO2.projet
 
 import fr.istic.scribble.*
 
-import Transformations.*
-
 object ImpQuadtrees extends IntQuadtrees {
 
-  // **************************************************************************** \\
-  // *                                                                          * \\
-  // *                             VARIABLES GLOBALES                           * \\
-  // *                                                                          * \\
-  // **************************************************************************** \\
-
   private val GRID_COLOR: Color = RED
+  private type RGB = (Int, Int, Int)
 
   // **************************************************************************** \\
   // *                                                                          * \\
@@ -24,53 +17,39 @@ object ImpQuadtrees extends IntQuadtrees {
   // *                             quadtree_to_image                            * \\
   // **************************************************************************** \\
 
-  /** @param length la taille de la zone.
-    * @param fc la couleur dans l'aire de la zone.
-    * @param lc la couleur du contour de la zone.
-    * @return la zone de taille length, de couleur fc et contourée par la couleur lc.
+  /** @param color la couleur de l'image.
+    * @param grid si la grille des subdivisions est affichée ou non.
+    * @param length la longueur et largeur de l'image.
+    * @return l'image de taille length, de couleur fc et contourée si grid == true.
     */
-  private def make_area(
-      color: Color,
-      show_grid: Boolean,
-      length: Float
-  ): Image = {
+  private def make_area(color: Color, grid: Boolean, length: Float): Image = {
 
-    val rectangle: Image = Rectangle(length, length)
-    val colored_rectangle: Image = FillColor(rectangle, color)
-    val color_line: Color = (if (show_grid) then RED else color)
-
+    val colored_rectangle: Image = FillColor(Rectangle(length, length), color)
+    val color_line: Color = if (grid) then RED else color
     LineColor(colored_rectangle, color_line)
-
   }
 
   /** @param qt le quadtree représentant une image.
-    * @param show_grid indique si on affiche la grille des subdivisions ou non.
+    * @param grid indique si on affiche la grille des subdivisions ou non.
     * @param length le nombre de pixels de longueur de l'image.
     * @return l'image de longueur length basée du quadtree qt.
     */
-  private def quadtree_to_image_aux(
-      qt: QT,
-      show_grid: Boolean,
-      length: Float
-  ): Image = {
+  private def qt_to_img_aux(qt: QT, grid: Boolean, length: Float): Image = {
 
     qt match {
 
       // Cas de base : toute la zone n'est qu'une seule couleur.
-      case C(c) => make_area(c, show_grid, length)
+      case C(c) => make_area(c, grid, length)
 
       // Cas récursif : diviser la zone en 4 sous-zones, puis régner (les réunir).
       case N(no, ne, se, so) => {
 
-        val img_no: Image = quadtree_to_image_aux(no, show_grid, length / 2)
-        val img_ne: Image = quadtree_to_image_aux(ne, show_grid, length / 2)
-        val img_se: Image = quadtree_to_image_aux(se, show_grid, length / 2)
-        val img_so: Image = quadtree_to_image_aux(so, show_grid, length / 2)
+        val img_no: Image = qt_to_img_aux(no, grid, length / 2)
+        val img_ne: Image = qt_to_img_aux(ne, grid, length / 2)
+        val img_se: Image = qt_to_img_aux(se, grid, length / 2)
+        val img_so: Image = qt_to_img_aux(so, grid, length / 2)
 
-        val img_top: Image = Beside(img_no, img_ne)
-        val img_bot: Image = Beside(img_so, img_se)
-        Below(img_top, img_bot)
-
+        Below(Beside(img_no, img_ne), Beside(img_so, img_se))
       }
 
     }
@@ -85,7 +64,7 @@ object ImpQuadtrees extends IntQuadtrees {
     * @param transfo une fonction de transformation de quadtree.
     * @return le quadtree qt après la transformation transfo.
     */
-  private def get_compressed_node(no: QT, ne: QT, se: QT, so: QT): QT = {
+  private def compress_node(no: QT, ne: QT, se: QT, so: QT): QT = {
 
     (no, ne, se, so) match {
       case (C(a), C(b), C(c), C(d)) if a == b && b == c && c == d => C(a)
@@ -95,14 +74,63 @@ object ImpQuadtrees extends IntQuadtrees {
   }
 
   // **************************************************************************** \\
-  // *                            transformation                                * \\
+  // *                        transformations prédéfinies                       * \\
   // **************************************************************************** \\
 
-  /** @param qt un quadtree.
-    * @param transfo une fonction de transformation de quadtree.
-    * @return le quadtree qt après la transformation transfo.
+  /** @param v l'une des valeurs d'une couleur (rouge, bleu ou vert).
+    * @param coef le taux de lumonosité par lequel multiplier v.
+    * @return la valeur v multiplée par coef, en restant entre 0 et 255.
     */
-  private def apply_transfo(qt: QT, f: QT => QT): QT = {
+  private def brightness(r: Int, g: Int, b: Int, coef: Double): RGB = {
+    def f(x: Int) = math.min((x * coef).toInt, 255)
+    (f(r), f(g), f(b))
+  }
+
+  /** @param c une couleur.
+    * @return la couleur c en nuance de gris.
+    */
+  private def color_gray(c: Color): Color = {
+    val gray: Int = (c.red + c.green + c.blue) / 3
+    Color(gray, gray, gray, 255)
+  }
+
+  /** @param coef le taux de lumonosité par lequel multiplier chaque couleur.
+    * @param c une couleur.
+    * @return la couleur c dont la luminosité a été modifiée selon coef.
+    */
+  private def color_map(coef: Double)(c: Color): Color = {
+    val (r, g, b): RGB = brightness(c.red, c.green, c.blue, coef)
+    Color(r, g, b, 255)
+  }
+
+  /** @param qt un quadtree.
+    * @param color_map une fonction associant une couleur à sa nouvelle valeur.
+    * @return le quadtree où toutes les couleurs sont passées par color_map.
+    */
+  private def transfo_color(qt: QT, color_map: Color => Color): QT = {
+    qt match {
+      case C(c) => C(color_map(c))
+      case _    => qt
+    }
+  }
+
+  /** @param qt un quadtree.
+    * @param node_map une fonction associant un noeur à sa nouvelle valeur
+    * @return le quadtree où tous les noeuds sont passés par node_map.
+    */
+  private def transfo_subdiv(qt: QT, node_map: N => N): QT = {
+    qt match {
+      case N(no, ne, se, so) => node_map(N(no, ne, se, so))
+      case _                 => qt
+    }
+  }
+
+  /**
+    * @param qt un quadtree.
+    * @param f une transformation.
+    * @return le quadtree après la transformation f.
+    */
+  private def apply_transform(qt: QT, f: Transformation): QT = {
 
     qt match {
 
@@ -110,16 +138,15 @@ object ImpQuadtrees extends IntQuadtrees {
 
       case N(no, ne, se, so) => {
 
-        val new_no: QT = apply_transfo(no, f)
-        val new_ne: QT = apply_transfo(ne, f)
-        val new_se: QT = apply_transfo(se, f)
-        val new_so: QT = apply_transfo(so, f)
-
-        val new_qt: QT = N(new_no, new_ne, new_se, new_so)
-        f(new_qt)
+        val tno: QT = apply_transform(no, f)
+        val tne: QT = apply_transform(ne, f)
+        val tse: QT = apply_transform(se, f)
+        val tso: QT = apply_transform(so, f)
+        f(N(tno, tne, tse, tso))
       }
 
     }
+
   }
 
   // **************************************************************************** \\
@@ -128,56 +155,67 @@ object ImpQuadtrees extends IntQuadtrees {
   // *                                                                          * \\
   // **************************************************************************** \\
 
-  def quadtree_to_image(qt: QT, show_grid: Boolean, size_order: Int): Image = {
+  // **************************************************************************** \\
+  // *                                quadtrees                                 * \\
+  // **************************************************************************** \\
+
+  def quadtree_to_image(qt: QT, grid: Boolean, size_order: Int): Image = {
 
     // L'image doit avoir une longueur et une largeur positives.
     if size_order < 1 then {
       throw Exception("Invalid input: size_order < 1.")
     }
-
     val length: Float = math.pow(2.0, size_order.toDouble).toFloat
-    quadtree_to_image_aux(qt, show_grid, length)
+    qt_to_img_aux(qt, grid, length)
 
   }
 
   def compress(qt: QT): QT = {
-
     qt match {
-
       case C(c) => C(c)
-
-      case N(no, ne, se, so) => {
-
-        val c_no: QT = compress(no)
-        val c_ne: QT = compress(ne)
-        val c_se: QT = compress(se)
-        val c_so: QT = compress(so)
-
-        get_compressed_node(c_no, c_ne, c_se, c_so)
-
-      }
+      case N(no, ne, se, so) =>
+        compress_node(compress(no), compress(ne), compress(se), compress(so))
     }
   }
 
-  def transform(qt: QT, transfo: Transformation): QT = {
+  // **************************************************************************** \\
+  // *                        transformations prédéfinies                       * \\
+  // **************************************************************************** \\
 
-    transfo match {
-
-      case RotationLeft   => apply_transfo(qt, rotationLeft)
-      case RotationRight  => apply_transfo(qt, rotationRight)
-      case FlipVertical   => apply_transfo(qt, flipVertical)
-      case FlipHorizontal => apply_transfo(qt, flipHorizontal)
-
-      case ColorGray    => apply_transfo(qt, colorGrayScale)
-      case ColorLighten => apply_transfo(qt, colorLighten)
-      case ColorDarken  => apply_transfo(qt, colorDarken)
-
-    }
+  def rotation_left(qt: QT): QT = {
+    transfo_subdiv(qt, n => N(n.ne, n.se, n.so, n.no))
   }
 
-  def transforms(qt: QT, transfos: List[Transformation]): QT = {
+  def rotation_right(qt: QT): QT = {
+    transfo_subdiv(qt, n => N(n.so, n.no, n.se, n.so))
+  }
 
-    transfos.foldRight(qt)((trans, acc) => transform(acc, trans))
+  def flip_vertical(qt: QT): QT = {
+    transfo_subdiv(qt, n => N(n.ne, n.no, n.so, n.se))
+  }
+
+  def flip_horizontal(qt: QT): QT = {
+    transfo_subdiv(qt, n => N(n.so, n.se, n.ne, n.no))
+  }
+
+  def gray_shades(qt: QT): QT = {
+    transfo_color(qt, color_gray)
+  }
+
+  def lighten(qt: QT): QT = {
+    transfo_color(qt, color_map(1.2))
+  }
+
+  def darken(qt: QT): QT = {
+    transfo_color(qt, color_map(0.8))
+  }
+
+  // **************************************************************************** \\
+  // *                                transformations                           * \\
+  // **************************************************************************** \\
+
+  def transform(qt: QT, fs: List[Transformation]): QT = {
+    fs.foldRight(qt)((f, acc) => apply_transform(acc, f))
   }
 
 }
