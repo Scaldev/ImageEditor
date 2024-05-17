@@ -8,41 +8,53 @@
 
 ## I. Fonctionnalités.
 
-L'application permet d'effectuer toutes les fonctionnalités d'une version 0.
+Le projet permet d'effectuer toutes les fonctionnalités d'une version 0.
 
 ### A. <u>Structure du projet et quadtrees.</u>
 
-Le fichier `main.scala` correspond au côté utilisateur.
+Le fichier `Main.scala` correspond au côté utilisateur.
 
-Le fichier `application.scala` correspond au fichier principal de l'application de manipulation d'images. C'est dans celui-ci qu'est défini l'Univers.
-
-Le fichier `quadtrees.scala` contient la création du type algébrique `QT` représentant les quadtrees, ainsi que des fonctions en lien avec ce type. Le type `QT` est définit comme étant :
+Le fichier `IntQuadtrees.scala` correspond à l'interface de notre projet Quadtrees. Il contient la définition du type algébrique `QT` représentant les quadtrees, définit comme étant :
 
 - soit `C(c: Color)`, une feuille contenant une seule valeur : sa couleur, représentée par le type `Color` de Scribble.
 - soit `N(no: QT, ne: QT, se: QT, so: QT)`, un noeud interne possédant 4 sous-quadtrees où chacun représente un quart de zone.
 
-### B. <u>Lancement et arrêt.</u>
-
-A la création de l'Univers, l'utilisateur doit spécifier :
-
-- le quadtree a visualiser.
-- l'ordre de la taille de l'image, correspondant à la puissance $n$ telle que l'image sera de longueur et de largeur $2^n$.
-
-Ci-dessous, un exemple minimal de création d'Univers via l'application.
-
 ```scala
-/* Exemple de création d'univers
-   Ici, l'image sera un carré blanc de longueur 512. */
-val quadtree: QT = C(WHITE)
-val size_order: Int = 9
-bigbang(Application(quadtree, size_order))
+sealed trait QT
+case class C(c: Color) extends QT
+case class N(no: QT, ne: QT, se: QT, so: QT) extends QT
 ```
 
-Appuyer sur la touche `x` stoppe l'application.
+L'inteface consiste pour l'instant en une unique fonction `quadtree_to_image` qui convertit un quadtree en une image Scribble.
+
+Le fichier `ImpQuadtrees.scala` implémente l'interface ci-dessus. Elle contient 2 fonctions auxiliaires privées implémentant `quadtree_to_image`.
+
+### B. <u>Conversion en image.</u>
+
+Utiliser la fonction `quadtree_to_imag` nécessite de donner en paramètre :
+
+- `quadtree` le quadtree a visualiser.
+- `show_grid` un booléen spécifiant si on affiche la grille des subdivisions (`true`) ou non (`false`).
+- `size_order` l'ordre de la taille de l'image, correspondant à la puissance $n$ telle que l'image sera de longueur et de largeur $2^n$.
+
+Ci-dessous, un exemple minimal de création d'Univers via l'interface.
+
+```scala
+/* Exemple de création d'image. */
+
+val servQT: IntQuadtrees = ???
+
+val quadtree: QT = C(WHITE)
+val show_grid: Boolean = true
+val size_order: Int = 9
+
+val image: Image = servQT.quadtree_to_image(quadtree, show_grid, size_order)
+draw(image)
+```
 
 ### C. <u>Grille de subdivisions.</u>
 
-Appuyer sur la touche `g` affiche et cache (selon le mode courant) la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
+Paramétrer `show_grid` comme valant `true` (resp. `false`) affiche (resp. cache) la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
 
 <img style="display: block; margin: auto; height: 512px;" src="images/grid.png">
 
