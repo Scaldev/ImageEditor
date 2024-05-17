@@ -14,7 +14,7 @@ case object RotationLeft   extends Transformation
 case object RotationRight  extends Transformation
 case object FlipVertical   extends Transformation
 case object FlipHorizontal extends Transformation
-case object ColorGrayScale extends Transformation
+case object ColorGray      extends Transformation
 case object ColorLighten   extends Transformation
 case object ColorDarken    extends Transformation
 

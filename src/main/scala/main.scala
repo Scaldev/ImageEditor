@@ -1,7 +1,6 @@
 package PRO2.projet
 
 import fr.istic.scribble.*
-
 import Templates.*
 
 object ProgrammeUtilisateur extends App {
@@ -20,7 +19,7 @@ object ProgrammeUtilisateur extends App {
   // *                                Manipulation                              * \\
   // **************************************************************************** \\
 
-  val transfos: List[Transformation] = ColorGrayScale :: ColorDarken :: FlipVertical :: RotationLeft :: Nil
+  val transfos: List[Transformation] = ColorLighten :: ColorLighten :: ColorLighten :: ColorLighten :: Nil
   val qt: QT = serv_QT.transforms(quadtree, transfos)
 
   val image = serv_QT.quadtree_to_image(qt, show_grid, size_order)

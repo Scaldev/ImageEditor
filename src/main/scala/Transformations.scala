@@ -11,50 +11,26 @@ object Transformations {
   // **************************************************************************** \\
 
   // **************************************************************************** \\
-  // *                              color values                                * \\
-  // **************************************************************************** \\
-
-  private def rgb_brighness(v: Int, coef: Double): Int = {
-    math.min((v * coef).toInt, 255)
-  }
-
-  // **************************************************************************** \\
   // *                                  colors                                  * \\
   // **************************************************************************** \\
 
-  private def color_lighten(c: Color): Color = {
-
-    val new_red: Int   = rgb_brighness(c.red, 1.2)
-    val new_green: Int = rgb_brighness(c.green, 1.2)
-    val new_blue: Int  = rgb_brighness(c.blue, 1.2)
-
-    Color(new_red, new_green, new_blue, 255)
-  }
-
-  private def color_darken(c: Color): Color = {
-
-    val new_red: Int   = rgb_brighness(c.red, 0.8)
-    val new_green: Int = rgb_brighness(c.green, 0.8)
-    val new_blue: Int  = rgb_brighness(c.blue, 0.8)
-
-    Color(new_red, new_green, new_blue, 255)
-  }
-
-  private def color_gray(c: Color): Color = {
-
-    val gray: Int = (c.red + c.green + c.blue) / 3
-    Color(gray, gray, gray, 255)
-
-  }
-  
-  /**
-    * @param qt un quadtree dont les subdivisions ont été miroitées par l'axe vertical.
-    * @return le quadtree qt après un miroitage d'axe vertical.
+  /** @param v l'une des valeurs d'une couleur (rouge, bleu ou vert).
+    * @param coef le taux de lumonosité par lequel multiplier v.
+    * @return la valeur v multiplée par coef, en restant entre 0 et 255.
     */
-  private def colorChange(qt: QT, f: Color => Color): QT = {
+  private def rgb_brighness(v: Int, coef: Double): Int = {
+    
+    math.min((v * coef).toInt, 255)
+  }
+
+  /** @param qt un quadtree.
+    * @param color_map une fonction associant une couleur à sa nouvelle valeur.
+    * @return le quadtree où toutes les couleurs sont passées par color_map.
+    */
+  private def colorChange(qt: QT, color_map: Color => Color): QT = {
     qt match {
-      case C(c) => C(f(c))
-      case _ => qt
+      case C(c) => C(color_map(c))
+      case _    => qt
     }
   }
 
@@ -65,7 +41,7 @@ object Transformations {
   // **************************************************************************** \\
 
   // **************************************************************************** \\
-  // *                              rotation                                    * \\
+  // *                                  rotation                                * \\
   // **************************************************************************** \\
 
   /** @param qt un quadtree dont les subdivisions ont été tournées vers la gauche.
@@ -89,7 +65,7 @@ object Transformations {
   }
 
   // **************************************************************************** \\
-  // *                              miroiter                                    * \\
+  // *                                  miroiter                                * \\
   // **************************************************************************** \\
 
   /** @param qt un quadtree dont les subdivisions ont été miroitées par l'axe vertical.
@@ -113,22 +89,56 @@ object Transformations {
   }
 
   // **************************************************************************** \\
-  // *                              miroiter                                    * \\
+  // *                                  couleurs                                * \\
   // **************************************************************************** \\
 
-  /** @param qt un quadtree dont les subdivisions ont été miroitées par l'axe vertical.
-    * @return le quadtree qt après un miroitage d'axe vertical.
+  /** @param qt un quadtree.
+    * @return le même quadtree dont les couleurs sont en nuance de gris.
     */
   def colorGrayScale(qt: QT): QT = {
-    colorChange(qt, color_gray)
+
+    def color_map(c: Color): Color = {
+
+      val gray: Int = (c.red + c.green + c.blue) / 3
+
+      Color(gray, gray, gray, 255)
+    }
+
+    colorChange(qt, color_map)
   }
 
+  /** @param qt un quadtree.
+    * @return le même quadtree éclairé à 20%.
+    */
   def colorLighten(qt: QT): QT = {
-    colorChange(qt, color_lighten)
+
+    def color_map(c: Color): Color = {
+
+      val r: Int = rgb_brighness(c.red, 1.2)
+      val g: Int = rgb_brighness(c.green, 1.2)
+      val b: Int = rgb_brighness(c.blue, 1.2)
+
+      Color(r, g, b, 255)
+    }
+
+    colorChange(qt, color_map)
   }
 
+  /** @param qt un quadtree.
+    * @return le même quadtree assombri à 20%.
+    */
   def colorDarken(qt: QT): QT = {
-    colorChange(qt, color_darken)
+
+    def color_map(c: Color): Color = {
+
+      val r: Int = rgb_brighness(c.red, 0.8)
+      val g: Int = rgb_brighness(c.green, 0.8)
+      val b: Int = rgb_brighness(c.blue, 0.8)
+
+      Color(r, g, b, 255)
+    }
+
+    colorChange(qt, color_map)
   }
 
 }

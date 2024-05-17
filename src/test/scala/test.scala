@@ -6,17 +6,17 @@ class MySuite extends munit.FunSuite {
 
   // Valeurs globales.
 
-  val App: IntQuadtrees = ImpQuadtrees
+  val serv_QT: IntQuadtrees = ImpQuadtrees
   val dsize: Int = 9
   val dlength: Float = 512.0
 
   // **************************************************************************** \\
-  // *                          	  quadtree_to_image                     	* \\
+  // *                          	  quadtree_to_image                     	    * \\
   // **************************************************************************** \\
 
   test("quadtree_to_image : zone unicolore sans contour") {
 
-    val obtained = App.quadtree_to_image(C(WHITE), false, dsize)
+    val obtained = serv_QT.quadtree_to_image(C(WHITE), false, dsize)
 
     val expected =
       LineColor(FillColor(Rectangle(dlength, dlength), WHITE), WHITE)
@@ -27,7 +27,7 @@ class MySuite extends munit.FunSuite {
 
   test("quadtree_to_image : zone unicolore avec contour") {
 
-    val obtained = App.quadtree_to_image(C(WHITE), true, dsize)
+    val obtained = serv_QT.quadtree_to_image(C(WHITE), true, dsize)
 
     val expected = LineColor(FillColor(Rectangle(dlength, dlength), WHITE), RED)
 
@@ -38,7 +38,7 @@ class MySuite extends munit.FunSuite {
   test("quadtree_to_image : image non-compressee") {
 
     val qt: QT = N(C(WHITE), C(WHITE), C(WHITE), C(WHITE))
-    val obtained = App.quadtree_to_image(qt, false, dsize)
+    val obtained = serv_QT.quadtree_to_image(qt, false, dsize)
 
     val subrect: Image = FillColor(Rectangle(dlength / 2, dlength / 2), WHITE)
     val dsubdiv: Image = LineColor(subrect, WHITE)
@@ -60,7 +60,7 @@ class MySuite extends munit.FunSuite {
       N(C(BLACK), C(WHITE), C(WHITE), C(WHITE))
     )
 
-    val obtained = App.quadtree_to_image(qt, false, dsize)
+    val obtained = serv_QT.quadtree_to_image(qt, false, dsize)
 
     // Expected.
     // La fonction make_area ayant été testée avant, on fait l'hypothèse
@@ -95,4 +95,17 @@ class MySuite extends munit.FunSuite {
     assertEquals(obtained, expected)
 
   }
+
+  // **************************************************************************** \\
+  // *                          	      compress                     	          * \\
+  // **************************************************************************** \\
+
+  // **************************************************************************** \\
+  // *                          	     transform                     	          * \\
+  // **************************************************************************** \\
+
+  // **************************************************************************** \\
+  // *                          	     transforms                     	        * \\
+  // **************************************************************************** \\
+
 }

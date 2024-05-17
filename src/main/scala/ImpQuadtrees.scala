@@ -29,7 +29,11 @@ object ImpQuadtrees extends IntQuadtrees {
     * @param lc la couleur du contour de la zone.
     * @return la zone de taille length, de couleur fc et contourée par la couleur lc.
     */
-  private def make_area(color: Color, show_grid: Boolean, length: Float): Image = {
+  private def make_area(
+      color: Color,
+      show_grid: Boolean,
+      length: Float
+  ): Image = {
 
     val rectangle: Image = Rectangle(length, length)
     val colored_rectangle: Image = FillColor(rectangle, color)
@@ -44,7 +48,11 @@ object ImpQuadtrees extends IntQuadtrees {
     * @param length le nombre de pixels de longueur de l'image.
     * @return l'image de longueur length basée du quadtree qt.
     */
-  private def quadtree_to_image_aux(qt: QT, show_grid: Boolean, length: Float): Image = {
+  private def quadtree_to_image_aux(
+      qt: QT,
+      show_grid: Boolean,
+      length: Float
+  ): Image = {
 
     qt match {
 
@@ -160,9 +168,9 @@ object ImpQuadtrees extends IntQuadtrees {
       case FlipVertical   => apply_transfo(qt, flipVertical)
       case FlipHorizontal => apply_transfo(qt, flipHorizontal)
 
-      case ColorGrayScale => apply_transfo(qt, colorGrayScale)
-      case ColorLighten   => apply_transfo(qt, colorLighten)
-      case ColorDarken    => apply_transfo(qt, colorDarken)
+      case ColorGray    => apply_transfo(qt, colorGrayScale)
+      case ColorLighten => apply_transfo(qt, colorLighten)
+      case ColorDarken  => apply_transfo(qt, colorDarken)
 
     }
   }
