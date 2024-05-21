@@ -2,7 +2,7 @@ package PRO2.projet
 
 import fr.istic.scribble.*
 
-object ImpQuadtrees extends IntQuadtrees {
+object ImpQuadtrees extends Quadtrees {
 
   private val GRID_COLOR: Color = RED
   private type RGB = (Int, Int, Int)
@@ -187,7 +187,7 @@ object ImpQuadtrees extends IntQuadtrees {
   }
 
   def rotation_right(qt: QT): QT = {
-    transfo_subdiv(qt, n => N(n.so, n.no, n.se, n.so))
+    transfo_subdiv(qt, n => N(n.so, n.no, n.ne, n.se))
   }
 
   def flip_vertical(qt: QT): QT = {
@@ -215,7 +215,7 @@ object ImpQuadtrees extends IntQuadtrees {
   // **************************************************************************** \\
 
   def transform(qt: QT, fs: List[Transformation]): QT = {
-    fs.foldRight(qt)((f, acc) => apply_transform(acc, f))
+    fs.foldLeft(qt)((acc, f) => apply_transform(acc, f))
   }
 
 }

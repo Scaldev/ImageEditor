@@ -1,12 +1,14 @@
 package PRO2.projet
 
 import fr.istic.scribble.*
+import PRO2.projet.ImpQuadtrees.rotation_left
+import PRO2.projet.ImpQuadtrees.flip_vertical
 
 class MySuite extends munit.FunSuite {
 
   // Valeurs globales.
 
-  val serv_QT: IntQuadtrees = ImpQuadtrees
+  val service_QT: Quadtrees = ImpQuadtrees
   val dsize: Int = 9
   val dlength: Float = 512.0
 
@@ -16,7 +18,7 @@ class MySuite extends munit.FunSuite {
 
   test("quadtree_to_image : zone unicolore sans contour") {
 
-    val obtained = serv_QT.quadtree_to_image(C(WHITE), false, dsize)
+    val obtained = service_QT.quadtree_to_image(C(WHITE), false, dsize)
 
     val expected =
       LineColor(FillColor(Rectangle(dlength, dlength), WHITE), WHITE)
@@ -27,7 +29,7 @@ class MySuite extends munit.FunSuite {
 
   test("quadtree_to_image : zone unicolore avec contour") {
 
-    val obtained = serv_QT.quadtree_to_image(C(WHITE), true, dsize)
+    val obtained = service_QT.quadtree_to_image(C(WHITE), true, dsize)
 
     val expected = LineColor(FillColor(Rectangle(dlength, dlength), WHITE), RED)
 
@@ -38,7 +40,7 @@ class MySuite extends munit.FunSuite {
   test("quadtree_to_image : image non-compressee") {
 
     val qt: QT = N(C(WHITE), C(WHITE), C(WHITE), C(WHITE))
-    val obtained = serv_QT.quadtree_to_image(qt, false, dsize)
+    val obtained = service_QT.quadtree_to_image(qt, false, dsize)
 
     val subrect: Image = FillColor(Rectangle(dlength / 2, dlength / 2), WHITE)
     val dsubdiv: Image = LineColor(subrect, WHITE)
@@ -60,7 +62,7 @@ class MySuite extends munit.FunSuite {
       N(C(BLACK), C(WHITE), C(WHITE), C(WHITE))
     )
 
-    val obtained = serv_QT.quadtree_to_image(qt, false, dsize)
+    val obtained = service_QT.quadtree_to_image(qt, false, dsize)
 
     // Expected.
     // La fonction make_area ayant été testée avant, on fait l'hypothèse
@@ -100,12 +102,87 @@ class MySuite extends munit.FunSuite {
   // *                          	      compress                     	          * \\
   // **************************************************************************** \\
 
-  // **************************************************************************** \\
-  // *                          	     transform                     	          * \\
-  // **************************************************************************** \\
+  test("compress : noeud dont les enfants sont 4 feuilles de même couleur") {
+
+    val quadtree: QT = N(C(WHITE), C(WHITE), C(WHITE), C(WHITE))
+
+    val obtained = service_QT.compress(quadtree)
+
+    val expected = C(WHITE)
+
+    assertEquals(obtained, expected)
+
+  }
+
+  test("compress : quadtree déjà compresé") {
+
+    val obtained = service_QT.compress(C(WHITE))
+
+    val expected = C(WHITE)
+
+    assertEquals(obtained, expected)
+
+  }
 
   // **************************************************************************** \\
-  // *                          	     transforms                     	        * \\
+  // *                          	  transformations                     	      * \\
   // **************************************************************************** \\
+
+  test("transformation : rotation_left") {
+
+    val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
+    val obtained = service_QT.rotation_left(quadtree)
+
+    val expected = N(C(BLUE), C(BLACK), C(WHITE), C(RED))
+
+    assertEquals(obtained, expected)
+
+  }
+
+  test("transformation : rotation_right") {
+
+    val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
+    val obtained = service_QT.rotation_right(quadtree)
+
+    val expected = N(C(WHITE), C(RED), C(BLUE), C(BLACK))
+
+    assertEquals(obtained, expected)
+
+  }
+
+  test("transformation : flip_vertical") {
+
+    val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
+    val obtained = service_QT.flip_vertical(quadtree)
+
+    val expected = N(C(BLUE), C(RED), C(WHITE), C(BLACK))
+
+    assertEquals(obtained, expected)
+
+  }
+
+  test("transformation : flip_horizontal") {
+
+    val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
+    val obtained = service_QT.flip_horizontal(quadtree)
+
+    val expected = N(C(WHITE), C(BLACK), C(BLUE), C(RED))
+
+    assertEquals(obtained, expected)
+
+  }
+
+  test("transformation : transform (rotation_right -> )") {
+
+    val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
+    val transfos: List[Transformation] = rotation_left :: flip_vertical :: Nil
+
+    val obtained = service_QT.transform(quadtree, transfos)
+
+    val expected = N(C(BLACK), C(BLUE), C(RED), C(WHITE))
+
+    assertEquals(obtained, expected)
+
+  }
 
 }

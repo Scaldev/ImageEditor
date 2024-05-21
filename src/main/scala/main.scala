@@ -9,7 +9,7 @@ object ProgrammeUtilisateur extends App {
   // *                                Configuration                             * \\
   // **************************************************************************** \\
 
-  val service_QT: IntQuadtrees = ImpQuadtrees
+  val service_QT: Quadtrees = ImpQuadtrees
 
   val grid: Boolean = false
   val size_order: Int = 9
@@ -43,8 +43,10 @@ object ProgrammeUtilisateur extends App {
     */
   def my_transformation(qt: QT) = {
 
-    val transfos = color_chaos :: service_QT.flip_vertical :: service_QT.rotation_left :: Nil
-    service_QT.transform(quadtree, repeat(service_QT.lighten, 3) ++ transfos)
+    val transfos = service_QT.rotation_right
+                :: Nil
+  
+    service_QT.transform(quadtree, transfos)
 
   }
 

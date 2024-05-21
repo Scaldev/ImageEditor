@@ -11,7 +11,7 @@ case class N(no: QT, ne: QT, se: QT, so: QT) extends QT
 
 type Transformation = QT => QT
 
-trait IntQuadtrees {
+trait Quadtrees {
 
   // **************************************************************************** \\
   // *                                quadtrees                                 * \\
