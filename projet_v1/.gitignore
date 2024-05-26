@@ -1,9 +1,0 @@
-# ignore config files
-
-.bloop/
-.bsp/
-.vscode/
-.metals/
-target
-
-# ignore
