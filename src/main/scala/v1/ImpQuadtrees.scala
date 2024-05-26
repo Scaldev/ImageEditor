@@ -1,4 +1,4 @@
-package PRO2.projet
+package PRO2.projet.v1
 
 import fr.istic.scribble.*
 
@@ -125,8 +125,7 @@ object ImpQuadtrees extends Quadtrees {
     }
   }
 
-  /**
-    * @param qt un quadtree.
+  /** @param qt un quadtree.
     * @param f une transformation.
     * @return le quadtree après la transformation f.
     */

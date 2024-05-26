@@ -1,4 +1,4 @@
-package PRO2.projet
+package PRO2.projet.v1
 
 import fr.istic.scribble.*
 import Templates.*
@@ -37,20 +37,19 @@ object ProgrammeUtilisateur extends App {
     }
   }
 
-  /**
-    * @param qt un quadtree.
+  /** @param qt un quadtree.
     * @return le quadtree après une série de transformations choisies.
     */
   def my_transformation(qt: QT) = {
 
     val transfos = service_QT.rotation_left
-                :: service_QT.flip_vertical
-                :: color_chaos // transformation créée par l'utilisateur
-                :: service_QT.lighten
-                :: service_QT.lighten
-                :: service_QT.lighten
-                :: Nil
-  
+      :: service_QT.flip_vertical
+      :: color_chaos // transformation créée par l'utilisateur
+      :: service_QT.lighten
+      :: service_QT.lighten
+      :: service_QT.lighten
+      :: Nil
+
     service_QT.transform(quadtree, transfos)
 
   }

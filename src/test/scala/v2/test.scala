@@ -1,22 +1,29 @@
-package PRO2.projet
+package PRO2.projet.v2
 
 import fr.istic.scribble.*
-import PRO2.projet.ImpQuadtrees.rotation_left
-import PRO2.projet.ImpQuadtrees.flip_vertical
 
 class MySuite extends munit.FunSuite {
 
   // Valeurs globales.
-
-  val service_QT: Quadtrees = ImpQuadtrees
   val dsize: Int = 9
   val dlength: Float = 512.0
+
+  // Services.
+  val service_QT: Quadtrees = ImpQuadtrees
+  val service_ML: Matrices = ImpMatricesList
+  val service_MV: Matrices = ImpMatricesVector
+
+  // **************************************************************************** \\
+  // *                                                                          * \\
+  // *                                  QUADTREES                               * \\
+  // *                                                                          * \\
+  // **************************************************************************** \\
 
   // **************************************************************************** \\
   // *                          	  quadtree_to_image                     	    * \\
   // **************************************************************************** \\
 
-  test("quadtree_to_image : zone unicolore sans contour") {
+  test("Quadtrees : quadtree_to_image -> zone unicolore sans contour") {
 
     val obtained = service_QT.quadtree_to_image(C(WHITE), false, dsize)
 
@@ -27,7 +34,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("quadtree_to_image : zone unicolore avec contour") {
+  test("Quadtrees : quadtree_to_image -> zone unicolore avec contour") {
 
     val obtained = service_QT.quadtree_to_image(C(WHITE), true, dsize)
 
@@ -37,7 +44,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("quadtree_to_image : image non-compressee") {
+  test("Quadtrees : quadtree_to_image -> image non-compressee") {
 
     val qt: QT = N(C(WHITE), C(WHITE), C(WHITE), C(WHITE))
     val obtained = service_QT.quadtree_to_image(qt, false, dsize)
@@ -50,7 +57,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("quadtree_to_image : image non-unicolore") {
+  test("Quadtrees : quadtree_to_image -> image non-unicolore") {
 
     // Obtained.
     // Remarque : c'est l'exemple du cours !
@@ -102,7 +109,7 @@ class MySuite extends munit.FunSuite {
   // *                          	      compress                     	          * \\
   // **************************************************************************** \\
 
-  test("compress : noeud dont les enfants sont 4 feuilles de même couleur") {
+  test("Quadtrees : compress -> noeud dont les enfants sont 4 feuilles de même couleur") {
 
     val quadtree: QT = N(C(WHITE), C(WHITE), C(WHITE), C(WHITE))
 
@@ -114,7 +121,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("compress : quadtree déjà compresé") {
+  test("Quadtrees : compress -> quadtree déjà compresé") {
 
     val obtained = service_QT.compress(C(WHITE))
 
@@ -128,7 +135,7 @@ class MySuite extends munit.FunSuite {
   // *                          	  transformations                     	      * \\
   // **************************************************************************** \\
 
-  test("transformation : rotation_left") {
+  test("Quadtrees : rotation_left") {
 
     val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
     val obtained = service_QT.rotation_left(quadtree)
@@ -139,7 +146,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("transformation : rotation_right") {
+  test("Quadtrees : rotation_right") {
 
     val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
     val obtained = service_QT.rotation_right(quadtree)
@@ -150,7 +157,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("transformation : flip_vertical") {
+  test("Quadtrees : flip_vertical") {
 
     val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
     val obtained = service_QT.flip_vertical(quadtree)
@@ -161,7 +168,7 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("transformation : flip_horizontal") {
+  test("Quadtrees : flip_horizontal") {
 
     val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
     val obtained = service_QT.flip_horizontal(quadtree)
@@ -172,10 +179,11 @@ class MySuite extends munit.FunSuite {
 
   }
 
-  test("transformation : transform (rotation_right -> )") {
+  test("Quadtrees : transform") {
 
     val quadtree: QT = N(C(RED), C(BLUE), C(BLACK), C(WHITE))
-    val transfos: List[Transformation] = rotation_left :: flip_vertical :: Nil
+    val transfos: List[Transformation] =
+      service_QT.rotation_left :: service_QT.flip_vertical :: Nil
 
     val obtained = service_QT.transform(quadtree, transfos)
 
@@ -184,5 +192,85 @@ class MySuite extends munit.FunSuite {
     assertEquals(obtained, expected)
 
   }
+
+  // **************************************************************************** \\
+  // *                                                                          * \\
+  // *                                  MATRICES                                * \\
+  // *                                                                          * \\
+  // **************************************************************************** \\
+
+  // **************************************************************************** \\
+  // *                              get_dimensions                        	    * \\
+  // **************************************************************************** \\
+
+  test("Matrices : get_dimensions (implémentation listes)") {
+
+    val m = service_ML.init_matrix(2, 3, 0)
+
+    val obtained = service_ML.get_dimensions(m)
+    val expected = (2, 3)
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : get_dimensions (implémentation vecteurs)") {
+
+    val m = service_MV.init_matrix(2, 3, 0)
+
+    val obtained = service_MV.get_dimensions(m)
+    val expected = (2, 3)
+
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                                get_element                          	    * \\
+  // **************************************************************************** \\
+
+  test("Matrices : get_dimensions -> élément présent (implémentation listes)") {
+
+    val m = service_ML.init_matrix(2, 3, 0)
+
+    val obtained = service_ML.get_element(m, 1, 2)
+    val expected = Some(0)
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : get_dimensions -> élément présent (implémentation vecteurs)") {
+
+    val m = service_MV.init_matrix(2, 3, 0)
+
+    val obtained = service_MV.get_element(m, 1, 2)
+    val expected = Some(0)
+
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : get_dimensions -> élément absent (implémentation listes)") {
+
+    val m = service_ML.init_matrix(2, 3, 0)
+
+    val obtained = service_ML.get_element(m, 2, 2)
+    val expected = None
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : get_dimensions -> élément absent (implémentation vecteurs)") {
+
+    val m = service_MV.init_matrix(2, 3, 0)
+
+    val obtained = service_MV.get_element(m, 2, 2)
+    val expected = None
+    
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                                set_element                          	    * \\
+  // **************************************************************************** \\
+
 
 }

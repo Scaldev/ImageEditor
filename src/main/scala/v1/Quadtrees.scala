@@ -1,4 +1,4 @@
-package PRO2.projet
+package PRO2.projet.v1
 
 import fr.istic.scribble.*
 
