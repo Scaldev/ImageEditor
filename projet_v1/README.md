@@ -24,7 +24,7 @@ case class N(no: QT, ne: QT, se: QT, so: QT) extends QT
 L'interface contient les fonctionnalités suivantes (voir le fichier source pour les spécifications complètes) :
 
 ```scala
-trait IntQuadtrees {
+trait Quadtrees {
 
   // Manipulation de Quadtrees.
 
@@ -56,7 +56,7 @@ Le fichier `ImpQuadtrees.scala` implémente l'interface décrite dans la section
 
 ### 3. L'utilisation.
 
-Le fichier `Main.scala` correspond au côté utilisateur. Il est lié à un fichier auxiliaire `Templates.scala` contenant spécifiquement des quadtrees prédéfinis pouvant être utilisés.
+Le fichier `ProgrammeUtilisateur.scala` correspond au côté utilisateur. Il est lié à un fichier auxiliaire `Templates.scala` contenant spécifiquement des quadtrees prédéfinis pouvant être utilisés.
 
 
 ## II. Fonctionnalités.
@@ -72,7 +72,7 @@ Utiliser la fonction `quadtree_to_imag` nécessite de donner en paramètre :
 Ci-dessous, un exemple minimal de création d'Univers via l'interface.
 
 ```scala
-/* Exemple de création d'image dans Main.scala. */
+/* Exemple de création d'image dans ProgrammeUtilisateur.scala. */
 
 val service_QT: Quadtrees = ???
 
@@ -149,7 +149,7 @@ draw(image)
 
 *Figure 3: affichage de l'image représentée par `quadtree_plain` après plusieurs transformations.*
 
-Une transformation étant de type `QT => QT`, l'utilisateur peut tout à fait créer et utiliser ses propres transformations. Le fichier `Main.scala` en contient un exemple avec la fonction `color_chaos`.
+Une transformation étant de type `QT => QT`, l'utilisateur peut tout à fait créer et utiliser ses propres transformations. Le fichier `ProgrammeUtilisateur.scala` en contient un exemple avec la fonction `color_chaos`.
 
 ## III. Développement du projet.
 
