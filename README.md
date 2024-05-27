@@ -150,7 +150,7 @@ draw(image)
 
 On obtient alors l'affichage suivant au lancement.
 
-<img style="display: block; margin: auto; height: 512px;" src="images/display_image.png">
+<img style="display: block; margin: auto; height: 512px;" src="images/readme/display_image.png">
 
 <div style="text-align: center">
 
@@ -161,7 +161,7 @@ On obtient alors l'affichage suivant au lancement.
 
 Paramétrer `grid` comme valant `true` (resp. `false`) affiche (resp. cache) la grille des subdivisions successives en quarts. Cette grille correspondant à un contour rouge (couleur `RED` de Scribble) autour de toutes les formes dessinées.
 
-<img style="display: block; margin: auto; height: 512px;" src="images/grid_image.png">
+<img style="display: block; margin: auto; height: 512px;" src="images/readme/grid_image.png">
 
 <center>
 
@@ -208,7 +208,7 @@ draw(image)
 
 ...on obtient le résultat suivant.
 
-<img style="display: block; margin: auto; height: 512px;" src="images/transformation_image.png">
+<img style="display: block; margin: auto; height: 512px;" src="images/readme/transformation_image.png">
 
 *Figure 3: affichage de l'image représentée par `quadtree_plain` après plusieurs transformations.*
 
@@ -220,10 +220,10 @@ La fonction `file_to_quadtree` prend en entrée un fichier image (`.png` ou `.jp
 
 Cela permet notamment d'appliquer les fonctions de transformation à l'image.
 
-
-<img style="display: block; margin: auto;" src="images/meadow_comparaison.png">
+<img style="display: block; margin: auto;" src="images/readme/meadow_comparaison.png">
 
 <div style="text-align: center">
 
 *Figure 4: A gauche, une image chargée à partir d'une fichier image. A droite, cette même image après diffèrentes transformations, dont certaines programmées par l'utilisateur.*
+
 </div>

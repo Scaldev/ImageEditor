@@ -109,7 +109,7 @@ class MySuite extends munit.FunSuite {
   // *                          	      compress                     	          * \\
   // **************************************************************************** \\
 
-  test("Quadtrees : compress -> noeud dont les enfants sont 4 feuilles de même couleur") {
+  test("Quadtrees : compress -> noeud avec 4 feuilles de même couleur") {
 
     val quadtree: QT = N(C(WHITE), C(WHITE), C(WHITE), C(WHITE))
 
@@ -199,15 +199,20 @@ class MySuite extends munit.FunSuite {
   // *                                                                          * \\
   // **************************************************************************** \\
 
+  /* Afin de pouvoir tester facilement les fonctions de l'interface Matrices,
+     on admet que la fonction matrix_to_list soit correcte.
+     Dans chacune des implémentations, sa correction se montre facilement.
+   */
+
   // **************************************************************************** \\
   // *                              get_dimensions                        	    * \\
   // **************************************************************************** \\
 
   test("Matrices : get_dimensions") {
 
-    val m = serv_M.init_matrix(2, 3, 0)
+    val m = service_M.init_matrix(2, 3, 0)
 
-    val obtained = serv_M.get_dimensions(m)
+    val obtained = service_M.get_dimensions(m)
     val expected = (2, 3)
 
     assertEquals(obtained, expected)
@@ -219,9 +224,9 @@ class MySuite extends munit.FunSuite {
 
   test("Matrices : get_element -> élément présent") {
 
-    val m = serv_M.init_matrix(2, 3, 0)
+    val m = service_M.init_matrix(2, 3, 0)
 
-    val obtained = serv_M.get_element(m, 1, 2)
+    val obtained = service_M.get_element(m, 1, 2)
     val expected = Some(0)
 
     assertEquals(obtained, expected)
@@ -229,9 +234,9 @@ class MySuite extends munit.FunSuite {
 
   test("Matrices : get_element -> élément absent") {
 
-    val m = serv_M.init_matrix(2, 3, 0)
+    val m = service_M.init_matrix(2, 3, 0)
 
-    val obtained = serv_M.get_element(m, 2, 2)
+    val obtained = service_M.get_element(m, 2, 2)
     val expected = None
 
     assertEquals(obtained, expected)
@@ -241,13 +246,91 @@ class MySuite extends munit.FunSuite {
   // *                                set_element                          	    * \\
   // **************************************************************************** \\
 
-    test("Matrices : set_element ->") {
+  test("Matrices : set_element -> élément présent") {
 
-    val m = serv_M.init_matrix(2, 3, 0)
+    val m = service_M.init_matrix(2, 3, 0)
 
-    val obtained = serv_M.matrix_to_list(m)
+    val obtained = service_M.matrix_to_list(service_M.set_element(m, 1, 2, 42))
+    val expected = 0 :: 0 :: 0 :: 0 :: 0 :: 42 :: Nil
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : set_element -> élément absent") {
+
+    val m = service_M.init_matrix(2, 3, 0)
+
+    val obtained = service_M.matrix_to_list(service_M.set_element(m, 2, 2, 42))
     val expected = 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: Nil
-    
+
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                              matrix_to_list                          	  * \\
+  // **************************************************************************** \\
+
+  test("Matrices : matrix_to_list") {
+
+    val l = (1 :: 0 :: Nil) :: (0 :: 2 :: Nil) :: Nil
+
+    val m0 = service_M.init_matrix(2, 2, 0)
+    val m1 = service_M.set_element(m0, 0, 0, 1)
+    val m2 = service_M.set_element(m1, 1, 1, 2)
+
+    val obtained = service_M.list_to_matrix(l)
+    val expected = m2
+
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                              matrix_to_list                          	  * \\
+  // **************************************************************************** \\
+
+  test("Matrices : matrix_to_list") {
+
+    val m0 = service_M.init_matrix(2, 2, 0)
+    val m1 = service_M.set_element(m0, 0, 0, 1)
+    val m2 = service_M.set_element(m1, 1, 1, 2)
+
+    val obtained = service_M.matrix_to_list(m2)
+    val expected = 1 :: 0 :: 0 :: 2 :: Nil
+
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                            matrix_to_square                          	  * \\
+  // **************************************************************************** \\
+
+  test("Matrices : matrix_to_square -> matrice déjà carrée") {
+
+    val m = service_M.init_matrix(2, 2, 1)
+
+    val obtained = service_M.matrix_to_list(service_M.matrix_to_square(m, 0))
+    val expected = 1 :: 1 :: 1 :: 1 :: Nil
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : matrix_to_square -> matrice plus longue") {
+
+    val m = service_M.init_matrix(1, 2, 1)
+
+    val obtained = service_M.matrix_to_list(service_M.matrix_to_square(m, 0))
+    val expected = 1 :: 1 :: 0 :: 0 :: Nil
+
+    assertEquals(obtained, expected)
+  }
+
+  test("Matrices : matrix_to_square -> matrice plus haute") {
+
+    val m = service_M.init_matrix(2, 1, 1)
+
+    val obtained = service_M.matrix_to_list(service_M.matrix_to_square(m, 0))
+    val expected = 1 :: 0 :: 1 :: 0 :: Nil
+
     assertEquals(obtained, expected)
   }
 
@@ -256,25 +339,79 @@ class MySuite extends munit.FunSuite {
   // *                               CONVERSIONS                                * \\
   // *                                                                          * \\
   // **************************************************************************** \\
+
+  // **************************************************************************** \\
+  // *                             image_to_matrix                              * \\
+  // **************************************************************************** \\
+
+  test("MatrixConversions : image_to_matrix -> image carrée") {
+
+    val image = image_to_matrix("images/test/square.png")
+
+    val obtained = service_M.matrix_to_list(image)
+    val expected = RED :: GREEN :: BLACK :: BLUE :: Nil
+
+    assertEquals(obtained, expected)
+  }
   
-  test("UtilsMatrices : matrix_to_square") {
+  test("MatrixConversions : image_to_matrix -> image plus longue") {
 
-    val m = serv_M.init_matrix(1, 2, 1)
+    val image = image_to_matrix("images/test/wider.png")
 
-    val obtained = serv_M.matrix_to_square(m, 0)
-    val expected = serv_M.list_to_matrix(List(List(1, 1), List(0, 0))).get
-    
+    val obtained = service_M.matrix_to_list(image)
+    val expected = RED :: GREEN :: BLUE :: BLACK :: Nil
+
     assertEquals(obtained, expected)
   }
 
-  test("UtilsMatrices : image_to_matrix") {
+  test("MatrixConversions : image_to_matrix -> image plus haute") {
 
-    val m = image_to_matrix("images/meadow.png")
-    val obtained = service_QT.quadtree_to_image(matrix_to_quadtree(m), false, 9)
+    val image = image_to_matrix("images/test/higher.png")
 
-    draw(obtained)
+    val obtained = service_M.matrix_to_list(image)
+    val expected = RED :: GREEN :: BLUE :: BLACK :: Nil
 
-    true
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                          matrix_to_quadtree                              * \\
+  // **************************************************************************** \\
+
+    test("MatrixConversions : matrix_to_quadtree -> matrice carrée") {
+
+      val l = (RED :: GREEN :: Nil) :: (BLUE :: BLACK :: Nil) :: Nil
+      val m = service_M.list_to_matrix(l)
+
+      val obtained = matrix_to_quadtree(m)
+      val expected = N(C(RED), C(GREEN), C(BLACK), C(BLUE))
+
+    assertEquals(obtained, expected)
+
+  }
+
+    test("MatrixConversions : matrix_to_quadtree -> matrice plus longue") {
+
+      val l = (RED :: GREEN :: Nil) :: Nil
+      val m = service_M.list_to_matrix(l)
+
+      val obtained = matrix_to_quadtree(m)
+      val expected = N(C(RED), C(GREEN), C(colorFiller), C(colorFiller))
+
+    assertEquals(obtained, expected)
+    
+  }
+
+    test("MatrixConversions : matrix_to_quadtree -> matrice plus haute") {
+
+      val l = (RED :: Nil) :: (BLUE :: Nil) :: Nil
+      val m = service_M.list_to_matrix(l)
+
+      val obtained = matrix_to_quadtree(m)
+      val expected = N(C(RED), C(colorFiller), C(colorFiller), C(BLUE))
+
+    assertEquals(obtained, expected)
+    
   }
 
 }

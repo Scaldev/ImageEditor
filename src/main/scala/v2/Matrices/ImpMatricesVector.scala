@@ -135,19 +135,21 @@ object ImpMatricesVector extends Matrices {
   /** @param lines une liste de listes de même taille.
     * @return la matrice formée de la liste de listes, si possible.
     */
-  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]] = {
+  def list_to_matrix[Elt](lines: List[List[Elt]]): T[Elt] = {
 
     val hasMatrixShape = lines.length == 0 || lines.forall(l => l.length == lines.head.length)
 
-    if !hasMatrixShape then None
-    else Some(lines.map(line => line.toVector).toVector)
+    if !hasMatrixShape then {
+      throw Exception("Invalid input: size_order < 1.")
+    } else lines.map(line => line.toVector).toVector
 
   }
 
-  /** @param m une matrice.
-    * @return la liste des éléments de m, ordonnés dans le sens de lecture.
+  /** @param lines une liste de listes de même taille.
+    * @return la matrice formée à partir de lines.
     */
   def matrix_to_list[Elt](m: T[Elt]): List[Elt] = {
+    
     m.foldRight(Nil: List[Elt])((l, acc) => l.toList ++ acc)
   }
 

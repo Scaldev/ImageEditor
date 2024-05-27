@@ -173,34 +173,24 @@ object ImpMatricesList extends Matrices {
 
   }
 
-  /** @param l une matrice.
-    * @param n le nombre de lignes.
-    * @param p le nombre de colonnes.
-    * @return la matrice de taille n * p contenant les éléments de l,
-    *         ordonnés ligne par ligne.
-    */
-  def list_to_matrix[Elt](l: List[Elt], n: Int, p: Int): T[Elt] = {
-    n match {
-      case 0 => Nil
-      case _ => l.take(p) :: list_to_matrix(l.drop(p), n - 1, p)
-    }
-  }
-
   /** @param lines une liste de listes de même taille.
     * @return la matrice formée de la liste de listes, si possible.
     */
-  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]] = {
+  def list_to_matrix[Elt](lines: List[List[Elt]]): T[Elt] = {
 
     val hasMatrixShape = lines.length == 0 || lines.forall(l => l.length == lines.head.length)
 
-    if hasMatrixShape then Some(lines) else None
+    if !hasMatrixShape then {
+      throw Exception("Invalid input: size_order < 1.")
+    } else lines
 
   }
 
-  /** @param m une matrice.
-    * @return la liste des éléments de m, ordonnés ligne par ligne.
+  /** @param lines une liste de listes de même taille.
+    * @return la matrice formée à partir de lines.
     */
   def matrix_to_list[Elt](m: T[Elt]): List[Elt] = {
+    
     m.foldRight(Nil: List[Elt])((l, acc) => l ++ acc)
   }
 

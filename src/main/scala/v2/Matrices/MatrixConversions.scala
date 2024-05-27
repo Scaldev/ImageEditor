@@ -3,9 +3,9 @@ package PRO2.projet.v2
 import fr.istic.scribble.*
 import fr.istic.pro2.qtreeslib.*
 
-object MatrixConversions {
+val colorFiller = TRANSPARENT
 
-  val colorTransparent = TRANSPARENT
+object MatrixConversions {
 
   type Center = (Int, Int)
 
@@ -35,15 +35,15 @@ object MatrixConversions {
     */
   private def image_line_to_matrix_line_aux(
       filename: String,
-      m: serv_M.T[Color],
+      m: service_M.T[Color],
       i: Int,
       j: Int
-  ): serv_M.T[Color] = {
+  ): service_M.T[Color] = {
 
     j match {
-      case 0 => serv_M.set_element(m, i, 0, readColor(filename)(i, 0))
+      case 0 => service_M.set_element(m, i, 0, readColor(filename)(i, 0))
       case _ => {
-        val new_m = serv_M.set_element(m, i, j, readColor(filename)(i, j))
+        val new_m = service_M.set_element(m, i, j, readColor(filename)(i, j))
         image_line_to_matrix_line_aux(filename, new_m, i, j - 1)
       }
     }
@@ -57,11 +57,11 @@ object MatrixConversions {
     */
   private def image_line_to_matrix_line(
       filename: String,
-      m: serv_M.T[Color],
+      m: service_M.T[Color],
       i: Int
-  ): serv_M.T[Color] = {
+  ): service_M.T[Color] = {
 
-    val (_, p) = serv_M.get_dimensions(m)
+    val (_, p) = service_M.get_dimensions(m)
     image_line_to_matrix_line_aux(filename, m, i, p)
   }
 
@@ -73,9 +73,9 @@ object MatrixConversions {
     */
   private def image_to_matrix_aux(
       filename: String,
-      m: serv_M.T[Color],
+      m: service_M.T[Color],
       i: Int
-  ): serv_M.T[Color] = {
+  ): service_M.T[Color] = {
 
     // log_remaining_time(i)
 
@@ -98,7 +98,7 @@ object MatrixConversions {
     * @return le quadtree associé à m.
     */
   private def matrix_to_quadtree_aux(
-      m: serv_M.T[Color],
+      m: service_M.T[Color],
       c: Center,
       length: Int
   ): QT = {
@@ -107,7 +107,7 @@ object MatrixConversions {
 
     length match {
 
-      case 1 => C(serv_M.get_element(m, i, j).get)
+      case 1 => C(service_M.get_element(m, i, j).get)
 
       case _ => {
 
@@ -148,10 +148,10 @@ object MatrixConversions {
     *                 au format jpg ou png.
     * @return la matrice associée à l'image de nom filename.
     */
-  def image_to_matrix(filename: String): serv_M.T[Color] = {
+  def image_to_matrix(filename: String): service_M.T[Color] = {
 
     val (w, h) = getDimensions(filename)
-    val m = serv_M.init_matrix(h, w, colorTransparent)
+    val m = service_M.init_matrix(h, w, colorFiller)
 
     // print("Nombre de lignes de pixels à charger :   ")
     image_to_matrix_aux(filename, m, h - 1)
@@ -164,10 +164,10 @@ object MatrixConversions {
   /** @param m une matrice de couleurs représentant une image.
     * @return le quadtree de l'image représenté par la matrice.
     */
-  def matrix_to_quadtree(m: serv_M.T[Color]): QT = {
+  def matrix_to_quadtree(m: service_M.T[Color]): QT = {
 
-    val square_m = serv_M.matrix_to_square(m, colorTransparent)
-    val (n, p) = serv_M.get_dimensions(square_m)
+    val square_m = service_M.matrix_to_square(m, colorFiller)
+    val (n, p) = service_M.get_dimensions(square_m)
     val c: Center = (n / 2, p / 2)
 
     matrix_to_quadtree_aux(square_m, c, n)

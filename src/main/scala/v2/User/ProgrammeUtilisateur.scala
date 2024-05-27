@@ -7,10 +7,6 @@ import MatrixConversions.*
 
 object ProgrammeUtilisateur extends App {
 
-  // **************************************************************************** \\
-  // *                                Configuration                             * \\
-  // **************************************************************************** \\
-
   val service_QT: Quadtrees = ImpQuadtrees
 
   // **************************************************************************** \\
@@ -60,14 +56,16 @@ object ProgrammeUtilisateur extends App {
   // *                                Manipulation                              * \\
   // **************************************************************************** \\
 
+  // Paramètres
   val grid: Boolean = false
   val size_order: Int = 9
 
-  val quadtree = service_QT.file_to_quadtree("images/meadow.png")
+  // Chaîne de traitement
+  val quadtree = service_QT.file_to_quadtree("images/templates/meadow.png")
 
   val quadtree_transformed = my_transformation(quadtree)
 
-  val image = service_QT.quadtree_to_image(quadtree, grid, size_order)
+  val image = service_QT.quadtree_to_image(quadtree_transformed, grid, size_order)
 
   draw(image)
 

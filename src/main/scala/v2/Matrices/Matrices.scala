@@ -37,9 +37,9 @@ trait Matrices {
      tout en ayant une complexité plus raisonnable. */
      
   /** @param lines une liste de listes de même taille.
-    * @return la matrice formée de la liste de listes, si possible.
+    * @return la matrice formée à partir de lines.
     */
-  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]]
+  def list_to_matrix[Elt](lines: List[List[Elt]]): T[Elt]
 
   /** @param m une matrice.
     * @return la liste des éléments de m, ordonnés dans le sens de lecture.

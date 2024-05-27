@@ -4,7 +4,7 @@ import fr.istic.scribble.*
 import MatrixConversions.*
 
 /* Implémentation des matrices à utiliser. */
-val serv_M: Matrices = ImpMatricesVector
+val service_M: Matrices = ImpMatricesVector
 
 object ImpQuadtrees extends Quadtrees {
 
@@ -232,7 +232,7 @@ object ImpQuadtrees extends Quadtrees {
     */
   def file_to_quadtree(filename: String): QT = {
 
-    val m: serv_M.T[Color] = image_to_matrix(filename)
+    val m: service_M.T[Color] = image_to_matrix(filename)
 
     val qt: QT = matrix_to_quadtree(m)
 
