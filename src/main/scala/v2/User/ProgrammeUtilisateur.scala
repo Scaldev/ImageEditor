@@ -13,10 +13,6 @@ object ProgrammeUtilisateur extends App {
 
   val service_QT: Quadtrees = ImpQuadtrees
 
-  val grid: Boolean = false
-  val size_order: Int = 9
-  val quadtree: QT = quadtree_plain
-
   // **************************************************************************** \\
   // *                                  Fonctions                               * \\
   // **************************************************************************** \\
@@ -26,6 +22,10 @@ object ProgrammeUtilisateur extends App {
     * @return la liste contenant n fois la fonction f.
     */
   def repeat(f: Transformation, n: Int): List[Transformation] = {
+    n match {
+      case 0 => Nil
+      case _ => f :: repeat(f, n - 1)
+    }
     (1 to n).toList.map(_ => f)
   }
 
@@ -44,15 +44,15 @@ object ProgrammeUtilisateur extends App {
     */
   def my_transformation(qt: QT) = {
 
-    val transfos = service_QT.rotation_left
+    val transfos = 
+      service_QT.flip_horizontal
       :: service_QT.flip_vertical
       :: color_chaos // transformation créée par l'utilisateur
-      :: service_QT.lighten
-      :: service_QT.lighten
-      :: service_QT.lighten
+      :: service_QT.darken
+      // :: service_QT.darken
       :: Nil
 
-    service_QT.transform(quadtree, transfos)
+    service_QT.transform(qt, transfos)
 
   }
 
@@ -60,9 +60,15 @@ object ProgrammeUtilisateur extends App {
   // *                                Manipulation                              * \\
   // **************************************************************************** \\
 
-  val obtained = service_QT.file_to_quadtree("images/meadow.png")
+  val grid: Boolean = false
+  val size_order: Int = 9
 
-  println("Afficher")
-  draw(service_QT.quadtree_to_image(obtained, false, 9))
+  val quadtree = service_QT.file_to_quadtree("images/meadow.png")
+
+  val quadtree_transformed = my_transformation(quadtree)
+
+  val image = service_QT.quadtree_to_image(quadtree, grid, size_order)
+
+  draw(image)
 
 }

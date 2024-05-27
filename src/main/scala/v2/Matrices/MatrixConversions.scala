@@ -5,7 +5,7 @@ import fr.istic.pro2.qtreeslib.*
 
 object MatrixConversions {
 
-  val colorTransparent = Color(255, 255, 255, 0)
+  val colorTransparent = TRANSPARENT
 
   type Center = (Int, Int)
 
@@ -14,6 +14,13 @@ object MatrixConversions {
   // *                             FONCTIONS PRIVEES                            * \\
   // *                                                                          * \\
   // **************************************************************************** \\
+
+  /** @param i un entier naturel compris entre 0 et 99.
+    * Supprime dans la console l'entier précédent et affiche à la place i.
+    */
+  private def log_remaining_time(i: Int): Unit = {
+    print(s"\u0008\u0008${if i < 10 then " " else ""}$i")
+  }
 
   // **************************************************************************** \\
   // *                             image_to_matrix                              * \\
@@ -69,7 +76,8 @@ object MatrixConversions {
       m: serv_M.T[Color],
       i: Int
   ): serv_M.T[Color] = {
-    print(s"$i ")
+
+    // log_remaining_time(i)
 
     i match {
       case 0 => image_line_to_matrix_line(filename, m, 0)
@@ -77,21 +85,6 @@ object MatrixConversions {
         val new_m = image_line_to_matrix_line(filename, m, i)
         image_to_matrix_aux(filename, new_m, i - 1)
       }
-    }
-  }
-
-  private def image_line_to_list_aux(filename: String, i: Int, j: Int): List[Color] = {
-    j match {
-      case 0 => Nil
-      case _ => readColor(filename)(i, j) :: image_line_to_list_aux(filename, i, j - 1)
-    }
-  }
-
-  private def image_to_lists_aux(filename: String, m: serv_M.T[Color], i: Int): List[List[Color]] = {
-    print(s"$i ")
-    i match {
-      case 0 => Nil
-      case _ => image_line_to_list_aux(filename, i - 1, serv_M.get_dimensions(m)._1) :: image_to_lists_aux(filename, m, i - 1)
     }
   }
 
@@ -112,14 +105,16 @@ object MatrixConversions {
 
     val (i, j) = c
 
-    val dc = math.ceil(length.toFloat / 4).toInt
-    val df = math.floor(length.toFloat / 4).toInt
-
     length match {
 
       case 1 => C(serv_M.get_element(m, i, j).get)
 
       case _ => {
+
+        /* Décalage du centre étudié. La formule suivante permet de ne pas avoir
+           des arrondis destructeurs pour 1 ou 2 pixels de longueur. */
+        val dc = math.ceil(length.toFloat / 4).toInt
+        val df = math.floor(length.toFloat / 4).toInt
 
         // Calculer le milieu des sous-quadtrees.
         val c_no: Center = (i - dc, j - dc)
@@ -133,9 +128,7 @@ object MatrixConversions {
         val qt_se: QT = matrix_to_quadtree_aux(m, c_se, length / 2)
         val qt_so: QT = matrix_to_quadtree_aux(m, c_so, length / 2)
 
-
-        val a = N(qt_no, qt_ne, qt_se, qt_so)
-        a
+        N(qt_no, qt_ne, qt_se, qt_so)
 
       }
     }
@@ -160,16 +153,15 @@ object MatrixConversions {
     val (w, h) = getDimensions(filename)
     val m = serv_M.init_matrix(h, w, colorTransparent)
 
+    // print("Nombre de lignes de pixels à charger :   ")
     image_to_matrix_aux(filename, m, h - 1)
-    // serv_M.list_to_matrix(image_to_lists_aux(filename, m, h - 1)).get
   }
 
   // **************************************************************************** \\
   // *                          matrix_to_quadtree                              * \\
   // **************************************************************************** \\
 
-  /**
-    * @param m une matrice de couleurs représentant une image.
+  /** @param m une matrice de couleurs représentant une image.
     * @return le quadtree de l'image représenté par la matrice.
     */
   def matrix_to_quadtree(m: serv_M.T[Color]): QT = {

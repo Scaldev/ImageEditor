@@ -232,12 +232,10 @@ object ImpQuadtrees extends Quadtrees {
     */
   def file_to_quadtree(filename: String): QT = {
 
-    println("Image to matrix")
     val m: serv_M.T[Color] = image_to_matrix(filename)
-    
-    println("\nMatrix to quadtree")
+
     val qt: QT = matrix_to_quadtree(m)
-    
+
     compress(qt)
   }
 

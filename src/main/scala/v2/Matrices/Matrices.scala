@@ -33,6 +33,9 @@ trait Matrices {
     */
   def set_element[Elt](m: T[Elt], i: Int, j: Int, e: Elt): T[Elt]
 
+  /* Concevoir les fonctions ci-dessous à l'implémentation permet de gagner en rapidité
+     tout en ayant une complexité plus raisonnable. */
+     
   /** @param lines une liste de listes de même taille.
     * @return la matrice formée de la liste de listes, si possible.
     */

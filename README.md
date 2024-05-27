@@ -1,12 +1,38 @@
 <center>
 
-# Quatrees version 1
+# Quatrees version 2
 
 *par REDOR Ewan et PACCINI Mathys*
 
 </center>
 
-## I. Structure du projet.
+## I. Développement.
+
+### 1. <u>Avancement.</u>
+
+Toutes les fonctionnalités demandées pour la version 2 ont été implémentées.
+
+Les fonctionnalités supplémentaires sont les suivantes :
+
+- la fonction `transforms`, qui permet d'appliquer une liste de transformations à une image.
+
+- la seconde implémentation de matrices `ImpMatricesVector`, qui permet de gagner en rapidité, puisque la lecture de valeur est constante (et non linéaire comme avec les listes).
+
+Des tests ont également été implémentés afin de vérifier que les différentes fonctions programmées soient fonctionnelles.
+
+### 2. <u>Difficultés.</u>
+
+**Version 1.**
+
+Nous avons dû restructurer une partie de notre implémentation lors de la fonction `transforms`. En effet, notre choix initial ne permettait pas de mettre à la chaîne des transformations. La version actuelle le permet, et est d'ailleurs plus simple.
+
+**Version 2.**
+
+La décomposition fonctionnelle a été un challenge, et sans avoir rencontré de murs, cela a pris un certain temps et un *debugging* plus en profondeur. Les différents tests ont cependant permis de rapidement localiser les erreurs et les corriger.
+
+## II. Structure.
+
+Ci-dessous, la structure générale du projet est présentée.
 
 ### 1. L'interface.
 
@@ -47,6 +73,10 @@ trait Quadtrees {
 
   def transform(qt: QT, fs: List[Transformation]): QT
 
+  // Charger une image depuis un fichier.
+
+  def file_to_quadtree(filename: String): QT
+
 }
 ```
 
@@ -54,16 +84,49 @@ trait Quadtrees {
 
 Le fichier `ImpQuadtrees.scala` implémente l'interface décrite dans la section précédente, et ce grâce à une décomposition fonctionnelle.
 
+En particulier, l'implémentation de la fonction `file_to_quadtree` a nécessité la création d'une autre interface, `Matrices`, donnée sans spécification ci-dessous.
+
+```scala
+trait Matrices {
+
+  type T[Elt]
+
+  // Méthodes élémentaires.
+
+  def init_matrix[Elt](n: Int, p: Int, e: Elt): T[Elt]
+  def get_dimensions[Elt](m: T[Elt]): (Int, Int)
+  def get_element[Elt](m: T[Elt], i: Int, j: Int): Option[Elt]
+  def set_element[Elt](m: T[Elt], i: Int, j: Int, e: Elt): T[Elt]
+
+  // Conversions utiles.
+
+  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]]
+  def matrix_to_list[Elt](m: T[Elt]): List[Elt]
+  def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt]
+
+}
+```
+
+Cette interface a été implémentée de deux manières différentes.
+
+- l'implémentation `ImpMatricesList` représente une matrice comme une liste de listes.
+
+- l'implémentation `ImpMatricesVector` représente une matrice comme un vecteur de vecteurs. Cela a le bénéfice d'avoir un coût constant sur la lecture des éléments de la matrice.
+
+Enfin, l'objet `MatrixConversions` permet de faire le lien entre image, matrice et quadtree. En effet, celui-ci contient les fonctions `image_to_matrix` et `matrix_to_quadtree`.
+
 ### 3. L'utilisation.
 
-Le fichier `ProgrammeUtilisateur.scala` correspond au côté utilisateur. Il est lié à un fichier auxiliaire `Templates.scala` contenant spécifiquement des quadtrees prédéfinis pouvant être utilisés.
+Le fichier `ProgrammeUtilisateur.scala` correspond au côté utilisateur. Quelques fonctions en lien avec les fonctions sont programmées afin d'illustrer l'utilisation de la fonction `transforms` de l'interface `Quadtrees`.
+
+Un fichier auxiliaire `Templates.scala` est également présent, contenant des quadtrees prédéfinis pouvant être utilisés par l'utilisateur.
 
 
-## II. Fonctionnalités.
+## III. Fonctionnalités.
 
 ### 1. <u>Conversion d'un quadtree en image.</u>
 
-Utiliser la fonction `quadtree_to_imag` nécessite de donner en paramètre :
+Utiliser la fonction `quadtree_to_image` nécessite de donner en paramètre :
 
 - `quadtree` le quadtree a visualiser.
 - `grid` un booléen spécifiant si on affiche la grille des subdivisions (`true`) ou non (`false`).
@@ -151,17 +214,16 @@ draw(image)
 
 Une transformation étant de type `QT => QT`, l'utilisateur peut tout à fait créer et utiliser ses propres transformations. Le fichier `ProgrammeUtilisateur.scala` en contient un exemple avec la fonction `color_chaos`.
 
-## III. Développement du projet.
+### 5. <u>Charger une image depuis un fichier.</u>
 
-### 1. <u>Avancement.</u>
+La fonction `file_to_quadtree` prend en entrée un fichier image (`.png` ou `.jpg`) selon son chemin relatif au projet, et renvoie le quadtree associé à cette image.
 
-Toutes les fonctionnalités demandées pour la version 1 ont été implémentées.
+Cela permet notamment d'appliquer les fonctions de transformation à l'image.
 
-Des fonctionnalités supplémentaires ont également été ajoutées, comme la fonction `transforms`.
 
-Des tests ont également été implémentés pour vérifier que les fonctions de l'implémentation sont correctes.
+<img style="display: block; margin: auto;" src="images/meadow_comparaison.png">
 
-### 2. <u>Difficultés.</u>
+<div style="text-align: center">
 
-Nous avons dû restructurer une partie de notre implémentation lors de la fonction `transforms`. En effet, notre choix initial ne permettait pas de mettre à la chaîne des transformations. La version actuelle le permet, et est d'ailleurs plus simple.
-
+*Figure 4: A gauche, une image chargée à partir d'une fichier image. A droite, cette même image après diffèrentes transformations, dont certaines programmées par l'utilisateur.*
+</div>
