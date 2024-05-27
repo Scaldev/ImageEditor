@@ -14,8 +14,13 @@ type Transformation = QT => QT
 trait Quadtrees {
 
   // **************************************************************************** \\
-  // *                                quadtrees                                 * \\
+  // *                               conversions                                * \\
   // **************************************************************************** \\
+
+  /** @param filename le nom du fichier d'image (chemin relatif au projet sbt) au format jpg ou png.
+    * @return le quadtree associé à l'image.
+    */
+  def file_to_quadtree(filename: String): QT
 
   /** @param qt un quadtree.
     * @param grid si on affiche la grille des subdivisions ou non.
@@ -32,7 +37,7 @@ trait Quadtrees {
   def compress(qt: QT): QT
 
   // **************************************************************************** \\
-  // *                        transformations prédéfinies                       * \\
+  // *                             transformations                              * \\
   // **************************************************************************** \\
 
   /** @param qt un quadtree dont les subdivisions sont supposées transformées.
@@ -70,25 +75,10 @@ trait Quadtrees {
     */
   def darken(qt: QT): QT
 
-  // **************************************************************************** \\
-  // *                                transformations                           * \\
-  // **************************************************************************** \\
-
   /** @param qt un quadtree.
     * @param fs une liste de transformations.
     * @return le quadtree qt après les transformations.
     */
   def transform(qt: QT, fs: List[Transformation]): QT
-
-  // **************************************************************************** \\
-  // *                               file_to_quadtree                           * \\
-  // **************************************************************************** \\
-
-  /**
-    * @param filename le nom du fichier d'image (chemin relatif au projet sbt)
-    *                 au format jpg ou png.
-    * @return le quadtree associé à l'image.
-    */
-  def file_to_quadtree(filename: String): QT
 
 }

@@ -52,12 +52,13 @@ L'interface contient les fonctionnalités suivantes (voir le fichier source pour
 ```scala
 trait Quadtrees {
 
-  // Manipulation de Quadtrees.
+  // Conversions.
 
   def quadtree_to_image(qt: QT, grid: Boolean, size_order: Int): Image
+  def file_to_quadtree(filename: String): QT
   def compress(qt: QT): QT
 
-  // Transformations prédéfinies par l'interface.
+  // Transformations.
 
   def rotation_left(qt: QT): QT
   def rotation_right(qt: QT): QT
@@ -69,13 +70,7 @@ trait Quadtrees {
   def lighten(qt: QT): QT
   def darken(qt: QT): QT
 
-  // Transformation de Quadtrees.
-
   def transform(qt: QT, fs: List[Transformation]): QT
-
-  // Charger une image depuis un fichier.
-
-  def file_to_quadtree(filename: String): QT
 
 }
 ```
@@ -98,9 +93,9 @@ trait Matrices {
   def get_element[Elt](m: T[Elt], i: Int, j: Int): Option[Elt]
   def set_element[Elt](m: T[Elt], i: Int, j: Int, e: Elt): T[Elt]
 
-  // Conversions utiles.
+  // Conversions.
 
-  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]]
+  def list_to_matrix[Elt](lines: List[List[Elt]]): T[Elt]
   def matrix_to_list[Elt](m: T[Elt]): List[Elt]
   def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt]
 
@@ -197,11 +192,9 @@ val transfos = service_QT.rotation_left
             :: service_QT.lighten
             :: Nil
   
-service_QT.transform(quadtree, transfos)
+val qt_transformed = service_QT.transform(quadtree, transfos)
 
-val qt: QT = my_transformation(quadtree)
-
-val image = service_QT.quadtree_to_image(qt, grid, size_order)
+val image = service_QT.quadtree_to_image(qt_transformed, grid, size_order)
 
 draw(image)
 ```

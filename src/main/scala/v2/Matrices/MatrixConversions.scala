@@ -15,16 +15,17 @@ object MatrixConversions {
   // *                                                                          * \\
   // **************************************************************************** \\
 
-  /** @param i un entier naturel compris entre 0 et 99.
-    * Supprime dans la console l'entier précédent et affiche à la place i.
-    */
-  private def log_remaining_time(i: Int): Unit = {
-    print(s"\u0008\u0008${if i < 10 then " " else ""}$i")
-  }
-
   // **************************************************************************** \\
   // *                             image_to_matrix                              * \\
   // **************************************************************************** \\
+
+  /** @param i un entier naturel compris entre 0 et 99.
+    * Supprime dans la console l'entier précédent et affiche à la place i.
+    */
+  private def log_remaining_lines(i: Int): Unit = {
+
+    print(s"\u0008\u0008${if i < 10 then " " else ""}$i")
+  }
 
   /** @param filename nom de fichier d'une image.
     * @param m la matrice associée à l'image.
@@ -77,7 +78,7 @@ object MatrixConversions {
       i: Int
   ): service_M.T[Color] = {
 
-    // log_remaining_time(i)
+    // log_remaining_lines(i)
 
     i match {
       case 0 => image_line_to_matrix_line(filename, m, 0)
@@ -116,17 +117,11 @@ object MatrixConversions {
         val dc = math.ceil(length.toFloat / 4).toInt
         val df = math.floor(length.toFloat / 4).toInt
 
-        // Calculer le milieu des sous-quadtrees.
-        val c_no: Center = (i - dc, j - dc)
-        val c_ne: Center = (i - dc, j + df)
-        val c_se: Center = (i + df, j + df)
-        val c_so: Center = (i + df, j - dc)
-
-        // Calculer le quadtrees de chaque coin de la matrice.
-        val qt_no: QT = matrix_to_quadtree_aux(m, c_no, length / 2)
-        val qt_ne: QT = matrix_to_quadtree_aux(m, c_ne, length / 2)
-        val qt_se: QT = matrix_to_quadtree_aux(m, c_se, length / 2)
-        val qt_so: QT = matrix_to_quadtree_aux(m, c_so, length / 2)
+        /* Calculer le quadtrees de chaque coin de la matrice. */
+        val qt_no: QT = matrix_to_quadtree_aux(m, (i - dc, j - dc), length / 2)
+        val qt_ne: QT = matrix_to_quadtree_aux(m, (i - dc, j + df), length / 2)
+        val qt_se: QT = matrix_to_quadtree_aux(m, (i + df, j + df), length / 2)
+        val qt_so: QT = matrix_to_quadtree_aux(m, (i + df, j - dc), length / 2)
 
         N(qt_no, qt_ne, qt_se, qt_so)
 
