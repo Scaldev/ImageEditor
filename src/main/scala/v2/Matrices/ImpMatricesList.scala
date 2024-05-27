@@ -62,6 +62,52 @@ object ImpMatricesList extends Matrices {
     }
   }
 
+  /**
+    * @param l une liste.
+    * @param e un élément.
+    * @param k un entier naturel.
+    * @return la liste l avec k fois l'élément e ajouté en tête de liste.
+    */
+  private def list_of_element[Elt](l: List[Elt], e: Elt, k: Int): List[Elt] = {
+    k match {
+      case 0 => Nil
+      case _ => e :: list_of_element(l, e, k - 1)
+    }
+  }
+
+  /**
+    * @param m une matrice.
+    * @param e un élément par défaut.
+    * @param k le nombre de lignes à ajouter.
+    * @return la matrice m avec k lignes de plus, contenant toutes
+    *         uniquement l'élément e.
+    */
+  private def add_lines[Elt](m: T[Elt], e: Elt, k: Int): T[Elt] = {
+
+    val (_, p) = get_dimensions(m)
+    
+    k match {
+      case 0 => m
+      case _ => add_lines(m, e, k) :+ list_of_element(Nil, e, p)
+    }
+  }
+
+  /**
+    * @param m une matrice.
+    * @param e un élément par défaut.
+    * @param k le nombre de colonnes à ajouter.
+    * @return la matrice m avec k colonnes de plus, contenant toutes
+    *         uniquement l'élément e.
+    */
+  private def add_columns[Elt](m: T[Elt], e: Elt, k: Int): T[Elt] = {
+
+    k match {
+      case 0 => m
+      case _ => m.map(l => l ++ list_of_element(l, e, k))
+    }
+    
+  }
+
   // **************************************************************************** \\
   // *                                                                          * \\
   // *                            FONCTIONS PUBLIQUES                           * \\
@@ -140,11 +186,36 @@ object ImpMatricesList extends Matrices {
     }
   }
 
+  /** @param lines une liste de listes de même taille.
+    * @return la matrice formée de la liste de listes, si possible.
+    */
+  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]] = {
+
+    val hasMatrixShape = lines.length == 0 || lines.forall(l => l.length == lines.head.length)
+
+    if hasMatrixShape then Some(lines) else None
+
+  }
+
   /** @param m une matrice.
     * @return la liste des éléments de m, ordonnés ligne par ligne.
     */
   def matrix_to_list[Elt](m: T[Elt]): List[Elt] = {
     m.foldRight(Nil: List[Elt])((l, acc) => l ++ acc)
+  }
+
+  /** @param m une matrice de taille n * p.
+    * @param e l'élément comblant les nouvelles cases.
+    * @return la matrice m carrée de taille max(n, p), dont les
+    *         nouveaux éléments valent colorTransparent.
+    */
+  def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt] = {
+
+    val (n, p) = get_dimensions(m)
+
+    if n > p then add_columns(m, e, n - p)
+    else if n < p then add_lines(m, e, p - n)
+    else m
   }
 
 }

@@ -3,6 +3,8 @@ package PRO2.projet.v2
 import fr.istic.scribble.*
 import Templates.*
 
+import MatrixConversions.*
+
 object ProgrammeUtilisateur extends App {
 
   // **************************************************************************** \\
@@ -58,10 +60,9 @@ object ProgrammeUtilisateur extends App {
   // *                                Manipulation                              * \\
   // **************************************************************************** \\
 
-  val qt: QT = my_transformation(quadtree)
+  val obtained = service_QT.file_to_quadtree("images/meadow.png")
 
-  val image = service_QT.quadtree_to_image(qt, grid, size_order)
-
-  draw(image)
+  println("Afficher")
+  draw(service_QT.quadtree_to_image(obtained, false, 9))
 
 }

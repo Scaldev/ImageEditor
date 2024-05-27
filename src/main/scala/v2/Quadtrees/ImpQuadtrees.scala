@@ -1,6 +1,10 @@
 package PRO2.projet.v2
 
 import fr.istic.scribble.*
+import MatrixConversions.*
+
+/* Implémentation des matrices à utiliser. */
+val serv_M: Matrices = ImpMatricesVector
 
 object ImpQuadtrees extends Quadtrees {
 
@@ -57,7 +61,7 @@ object ImpQuadtrees extends Quadtrees {
   }
 
   // **************************************************************************** \\
-  // *                               compress                                   * \\
+  // *                                  compress                                * \\
   // **************************************************************************** \\
 
   /** @param qt un quadtree.
@@ -215,6 +219,26 @@ object ImpQuadtrees extends Quadtrees {
 
   def transform(qt: QT, fs: List[Transformation]): QT = {
     fs.foldLeft(qt)((acc, f) => apply_transform(acc, f))
+  }
+
+  // **************************************************************************** \\
+  // *                               file_to_quadtree                           * \\
+  // **************************************************************************** \\
+
+  /**
+    * @param filename le nom du fichier d'image (chemin relatif au projet sbt)
+    *                 au format jpg ou png.
+    * @return le quadtree associé à l'image.
+    */
+  def file_to_quadtree(filename: String): QT = {
+
+    println("Image to matrix")
+    val m: serv_M.T[Color] = image_to_matrix(filename)
+    
+    println("\nMatrix to quadtree")
+    val qt: QT = matrix_to_quadtree(m)
+    
+    compress(qt)
   }
 
 }

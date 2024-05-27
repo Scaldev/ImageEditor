@@ -2,11 +2,12 @@ package PRO2.projet.v2
 
 import fr.istic.scribble.*
 import fr.istic.pro2.qtreeslib.*
-import PRO2.projet.v2.ImpMatricesList.init_matrix
 
-class MatrixConversions(serv: Matrices) {
+object MatrixConversions {
 
-  val serv_M: Matrices = serv
+  val colorTransparent = Color(255, 255, 255, 0)
+
+  type Center = (Int, Int)
 
   // **************************************************************************** \\
   // *                                                                          * \\
@@ -14,117 +15,130 @@ class MatrixConversions(serv: Matrices) {
   // *                                                                          * \\
   // **************************************************************************** \\
 
-  /** @param m une matrice de taille n * p.
-    * @param l une liste.
-    * @param i le numéro d'une ligne de m fixé.
-    * @param j le numéro d'une colonne de m.
-    * @return le couple (new_m, new_l) :
-    *         - new_m est la matrice faite de m où la i-ème ligne est constitué
-    *           des p premiers éléments de l.
-    *         - new_l est la liste l privée de ses p premiers éléments.
+  // **************************************************************************** \\
+  // *                             image_to_matrix                              * \\
+  // **************************************************************************** \\
+
+  /** @param filename nom de fichier d'une image.
+    * @param m la matrice associée à l'image.
+    * @param i la ligne de l'image lue (fixée).
+    * @param j la colonne de l'image lue.
+    * @return la matrice m dont les couleurs à la i-ème ligne correspondent
+    *         aux couleurs de la i-ème ligne de l'image de nom filename.
     */
-  private def set_matrix_line_from_list_aux[Elt](
-      m: serv_M.T[Elt],
-      l: List[Elt],
+  private def image_line_to_matrix_line_aux(
+      filename: String,
+      m: serv_M.T[Color],
       i: Int,
       j: Int
-  ): (serv_M.T[Elt], List[Elt]) = {
-
-    val (n, p) = serv_M.get_dimensions(m)
-
-    // j est itéré de 0 à p afin de changer chaque élément d'une ligne de m.
-    p - j match {
-
-      case 0 => (m, l)
-
-      case _ => {
-        val (new_m, new_l) = (serv_M.set_element(m, i, j, l.head), l.tail)
-        set_matrix_line_from_list_aux(new_m, new_l, i, j + 1)
-      }
-
-    }
-  }
-
-  /** @param m une matrice de taille n * p.
-    * @param l une liste.
-    * @param i le numéro d'une ligne de m.
-    * @return le couple (new_m, new_l) :
-    *         - new_m est la matrice m où la i-ème ligne est constituée
-    *           des p premiers éléments de l.
-    *         - new_l est la liste l privée de ses p premiers éléments.
-    */
-  private def set_matrix_line_from_list[Elt](
-      m: serv_M.T[Elt],
-      l: List[Elt],
-      i: Int
-  ): (serv_M.T[Elt], List[Elt]) = {
-
-    set_matrix_line_from_list_aux(m, l, i, 0)
-  }
-
-  /** @param m une matrice de taille n * p.
-    * @param l une liste de n * p éléments.
-    * @param i le numéro d'une ligne de m.
-    * @return la matrice aux dimensions de m et où chaque ligne i est constituée
-    *         des éléments de l d'indice appartenant à l'intervalle [i*p, (i+1)*p[.
-    * @example pour l = 1::2::3::4 Nil, on obtient la matrice ci-dessous :
-    *          |1  2|
-    *          |3  4|
-    */
-  private def set_matrix_from_list_aux[Elt](
-      m: serv_M.T[Elt],
-      l: List[Elt],
-      i: Int
-  ): serv_M.T[Elt] = {
-
-    val (n, p) = serv_M.get_dimensions(m)
-
-    n - i match {
-
-      case 0 => m
-
-      case _ => {
-        val (new_m, new_l) = set_matrix_line_from_list(m, l, i)
-        set_matrix_from_list_aux(new_m, new_l, i + 1)
-      }
-
-    }
-  }
-
-  /**
-    * @param m une matrice.
-    * @param l une liste.
-    * @param i le numéro d'une ligne de m fixé.
-    * @param j le numéro d'une colonne de m.
-    * @return la liste des éléments de la i-ème ligne de m, ordonnés dans le sens de lecture.
-    */
-  private def get_matrix_line_aux[Elt](
-      m: serv_M.T[Elt],
-      l: List[Elt],
-      i: Int,
-      j: Int
-  ): List[Elt] = {
+  ): serv_M.T[Color] = {
 
     j match {
-      case 0 => l
-      case _ =>
-        serv_M.get_element(m, i, j).get :: get_matrix_line_aux(m, l, i, j - 1)
-        // la spécification fait l'hypothèse qu'(i, j) soit une coordonnée valide.
-        // on peut donc directement récupérer la valeur de Some(e).
+      case 0 => serv_M.set_element(m, i, 0, readColor(filename)(i, 0))
+      case _ => {
+        val new_m = serv_M.set_element(m, i, j, readColor(filename)(i, j))
+        image_line_to_matrix_line_aux(filename, new_m, i, j - 1)
+      }
     }
-
   }
 
-  /**
-    * @param m une matrice.
-    * @param l une liste.
-    * @param i le numéro d'une ligne de m.
-    * @return la liste des éléments de la i-ème ligne de m, ordonnés dans le sens de lecture.
+  /** @param filename nom de fichier d'une image.
+    * @param m la matrice associée à l'image.
+    * @param i la ligne de l'image lue.
+    * @return la matrice m dont les couleurs à la i-ème ligne correspondent
+    *         aux couleurs de la i-ème ligne de l'image de nom filename.
     */
-  private def get_matrix_line[Elt](m: serv_M.T[Elt], l: List[Elt], i: Int): List[Elt] = {
+  private def image_line_to_matrix_line(
+      filename: String,
+      m: serv_M.T[Color],
+      i: Int
+  ): serv_M.T[Color] = {
 
     val (_, p) = serv_M.get_dimensions(m)
-    get_matrix_line_aux(m, l, i, p)
+    image_line_to_matrix_line_aux(filename, m, i, p)
+  }
+
+  /** @param filename nom de fichier d'une image.
+    * @param m la matrice associée à l'image.
+    * @param i la ligne de l'image lue.
+    * @return la matrice m dont les couleurs à chaque ligne correspondent aux couleurs
+    *         de la ligne associée dans l'image de nom filename.
+    */
+  private def image_to_matrix_aux(
+      filename: String,
+      m: serv_M.T[Color],
+      i: Int
+  ): serv_M.T[Color] = {
+    print(s"$i ")
+
+    i match {
+      case 0 => image_line_to_matrix_line(filename, m, 0)
+      case _ => {
+        val new_m = image_line_to_matrix_line(filename, m, i)
+        image_to_matrix_aux(filename, new_m, i - 1)
+      }
+    }
+  }
+
+  private def image_line_to_list_aux(filename: String, i: Int, j: Int): List[Color] = {
+    j match {
+      case 0 => Nil
+      case _ => readColor(filename)(i, j) :: image_line_to_list_aux(filename, i, j - 1)
+    }
+  }
+
+  private def image_to_lists_aux(filename: String, m: serv_M.T[Color], i: Int): List[List[Color]] = {
+    print(s"$i ")
+    i match {
+      case 0 => Nil
+      case _ => image_line_to_list_aux(filename, i - 1, serv_M.get_dimensions(m)._1) :: image_to_lists_aux(filename, m, i - 1)
+    }
+  }
+
+  // **************************************************************************** \\
+  // *                            matrix_to_quadtree                            * \\
+  // **************************************************************************** \\
+
+  /** @param m une matrice carrée.
+    * @param c une position dans cette matrice.
+    * @param scale l'échelle de zoom, tel que 2^square = longueur de m.
+    * @return le quadtree associé à m.
+    */
+  private def matrix_to_quadtree_aux(
+      m: serv_M.T[Color],
+      c: Center,
+      length: Int
+  ): QT = {
+
+    val (i, j) = c
+
+    val dc = math.ceil(length.toFloat / 4).toInt
+    val df = math.floor(length.toFloat / 4).toInt
+
+    length match {
+
+      case 1 => C(serv_M.get_element(m, i, j).get)
+
+      case _ => {
+
+        // Calculer le milieu des sous-quadtrees.
+        val c_no: Center = (i - dc, j - dc)
+        val c_ne: Center = (i - dc, j + df)
+        val c_se: Center = (i + df, j + df)
+        val c_so: Center = (i + df, j - dc)
+
+        // Calculer le quadtrees de chaque coin de la matrice.
+        val qt_no: QT = matrix_to_quadtree_aux(m, c_no, length / 2)
+        val qt_ne: QT = matrix_to_quadtree_aux(m, c_ne, length / 2)
+        val qt_se: QT = matrix_to_quadtree_aux(m, c_se, length / 2)
+        val qt_so: QT = matrix_to_quadtree_aux(m, c_so, length / 2)
+
+
+        val a = N(qt_no, qt_ne, qt_se, qt_so)
+        a
+
+      }
+    }
   }
 
   // **************************************************************************** \\
@@ -133,72 +147,38 @@ class MatrixConversions(serv: Matrices) {
   // *                                                                          * \\
   // **************************************************************************** \\
 
-  /** @param l une matrice.
-    * @param n le nombre de lignes.
-    * @param p le nombre de colonnes.
-    * @param e un élément par défaut.
-    * @return Some de la matrice de taille n * p contenant les éléments de l,
-    *         ordonnés ligne par ligne si les dimensions sont bonnes ; None sinon.
+  // **************************************************************************** \\
+  // *                             image_to_matrix                              * \\
+  // **************************************************************************** \\
+
+  /** @param filename le nom de fichier (chemin relatif au projet sbt) d'image
+    *                 au format jpg ou png.
+    * @return la matrice associée à l'image de nom filename.
     */
-  def list_to_matrix[Elt](
-      l: List[Elt],
-      n: Int,
-      p: Int,
-      e: Elt
-  ): Option[serv_M.T[Elt]] = {
+  def image_to_matrix(filename: String): serv_M.T[Color] = {
 
-    if l.length != n * p then {
-      None
-    } else {
-      val m = serv_M.init_matrix(n, p, l.head)
-      val new_m = set_matrix_from_list_aux(m, l, 0)
-      Some(new_m)
-    }
+    val (w, h) = getDimensions(filename)
+    val m = serv_M.init_matrix(h, w, colorTransparent)
 
+    image_to_matrix_aux(filename, m, h - 1)
+    // serv_M.list_to_matrix(image_to_lists_aux(filename, m, h - 1)).get
   }
 
-  /** @param m une matrice.
-    * @return la liste des éléments de m, ordonnés ligne par ligne.
+  // **************************************************************************** \\
+  // *                          matrix_to_quadtree                              * \\
+  // **************************************************************************** \\
+
+  /**
+    * @param m une matrice de couleurs représentant une image.
+    * @return le quadtree de l'image représenté par la matrice.
     */
-  def matrix_to_list[Elt](m: serv_M.T[Elt]): List[Elt] = {
-    Nil
+  def matrix_to_quadtree(m: serv_M.T[Color]): QT = {
+
+    val square_m = serv_M.matrix_to_square(m, colorTransparent)
+    val (n, p) = serv_M.get_dimensions(square_m)
+    val c: Center = (n / 2, p / 2)
+
+    matrix_to_quadtree_aux(square_m, c, n)
   }
-
-  /*
-  val serv_MT: Matrices[Elt] = ???
-
-  def fill_lines[Elt](m: Matrix[Elt], z: Elt, n: Int): Matrix[Elt] = {
-    val (iMax, jMax): (Int, Int) = Matrices[Elt].get_dimensions(m)
-    (1 to iMax).toList.map(i =>
-      Matrices[Elt].get_row(i) ++ (1 to n).toList(x => z)
-    )
-  }
-
-
-  /** @param filename le nom d'un fichier image.
-   * @param i une ligne de l'image.
-   * @param jMax la largeur de l'image.
-   * @return la liste de taille jMax des couleurs de la ligne i de filename.
-   */
-  def image_line_to_list(filename: String, i: Int, jMax: Int): List[Color] = {
-    (1 to jMax).toList.map(j => readColor(filename)(i, j))
-  }
-
-  /** @param file le nom du fichier image.
-   * @return la matrice représentant l'image.
-   */
-  def image_to_matrix(filename: String): Matrix[Color] = {
-    val (iMax, jMax) = getDimensions(filename)
-    (1 to iMax).toList.map(i => image_line_to_list(filename, i, jMax))
-  }
-
-
-  /** @param m une matrice carrée.
-   * @return le quadtree représentant la même image que m.
-   */
-  def matrix_to_quadtree(m: Matrix[Color]): QT = {
-    C(WHITE)
-  }
-   */
 
 }

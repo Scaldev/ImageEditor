@@ -2,6 +2,8 @@ package PRO2.projet.v2
 
 import fr.istic.scribble.*
 
+import MatrixConversions.*
+
 class MySuite extends munit.FunSuite {
 
   // Valeurs globales.
@@ -10,8 +12,6 @@ class MySuite extends munit.FunSuite {
 
   // Services.
   val service_QT: Quadtrees = ImpQuadtrees
-  val service_ML: Matrices = ImpMatricesList
-  val service_MV: Matrices = ImpMatricesVector
 
   // **************************************************************************** \\
   // *                                                                          * \\
@@ -203,21 +203,11 @@ class MySuite extends munit.FunSuite {
   // *                              get_dimensions                        	    * \\
   // **************************************************************************** \\
 
-  test("Matrices : get_dimensions (implémentation listes)") {
+  test("Matrices : get_dimensions") {
 
-    val m = service_ML.init_matrix(2, 3, 0)
+    val m = serv_M.init_matrix(2, 3, 0)
 
-    val obtained = service_ML.get_dimensions(m)
-    val expected = (2, 3)
-
-    assertEquals(obtained, expected)
-  }
-
-  test("Matrices : get_dimensions (implémentation vecteurs)") {
-
-    val m = service_MV.init_matrix(2, 3, 0)
-
-    val obtained = service_MV.get_dimensions(m)
+    val obtained = serv_M.get_dimensions(m)
     val expected = (2, 3)
 
     assertEquals(obtained, expected)
@@ -227,44 +217,23 @@ class MySuite extends munit.FunSuite {
   // *                                get_element                          	    * \\
   // **************************************************************************** \\
 
-  test("Matrices : get_dimensions -> élément présent (implémentation listes)") {
+  test("Matrices : get_element -> élément présent") {
 
-    val m = service_ML.init_matrix(2, 3, 0)
+    val m = serv_M.init_matrix(2, 3, 0)
 
-    val obtained = service_ML.get_element(m, 1, 2)
+    val obtained = serv_M.get_element(m, 1, 2)
     val expected = Some(0)
 
     assertEquals(obtained, expected)
   }
 
-  test("Matrices : get_dimensions -> élément présent (implémentation vecteurs)") {
+  test("Matrices : get_element -> élément absent") {
 
-    val m = service_MV.init_matrix(2, 3, 0)
+    val m = serv_M.init_matrix(2, 3, 0)
 
-    val obtained = service_MV.get_element(m, 1, 2)
-    val expected = Some(0)
-
-
-    assertEquals(obtained, expected)
-  }
-
-  test("Matrices : get_dimensions -> élément absent (implémentation listes)") {
-
-    val m = service_ML.init_matrix(2, 3, 0)
-
-    val obtained = service_ML.get_element(m, 2, 2)
+    val obtained = serv_M.get_element(m, 2, 2)
     val expected = None
 
-    assertEquals(obtained, expected)
-  }
-
-  test("Matrices : get_dimensions -> élément absent (implémentation vecteurs)") {
-
-    val m = service_MV.init_matrix(2, 3, 0)
-
-    val obtained = service_MV.get_element(m, 2, 2)
-    val expected = None
-    
     assertEquals(obtained, expected)
   }
 
@@ -272,5 +241,40 @@ class MySuite extends munit.FunSuite {
   // *                                set_element                          	    * \\
   // **************************************************************************** \\
 
+    test("Matrices : set_element ->") {
+
+    val m = serv_M.init_matrix(2, 3, 0)
+
+    val obtained = serv_M.matrix_to_list(m)
+    val expected = 0 :: 0 :: 0 :: 0 :: 0 :: 0 :: Nil
+    
+    assertEquals(obtained, expected)
+  }
+
+  // **************************************************************************** \\
+  // *                                                                          * \\
+  // *                               CONVERSIONS                                * \\
+  // *                                                                          * \\
+  // **************************************************************************** \\
+  
+  test("UtilsMatrices : matrix_to_square") {
+
+    val m = serv_M.init_matrix(1, 2, 1)
+
+    val obtained = serv_M.matrix_to_square(m, 0)
+    val expected = serv_M.list_to_matrix(List(List(1, 1), List(0, 0))).get
+    
+    assertEquals(obtained, expected)
+  }
+
+  test("UtilsMatrices : image_to_matrix") {
+
+    val m = image_to_matrix("images/meadow.png")
+    val obtained = service_QT.quadtree_to_image(matrix_to_quadtree(m), false, 9)
+
+    draw(obtained)
+
+    true
+  }
 
 }

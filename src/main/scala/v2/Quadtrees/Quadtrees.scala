@@ -4,11 +4,11 @@ import fr.istic.scribble.*
 
 /* Le type des Quadtrees n'est pas privé et définit dans l'interface,
 car on veut que l'utilisateur puisse en implémenter par lui-même. */
-
 sealed trait QT
 case class C(c: Color) extends QT
 case class N(no: QT, ne: QT, se: QT, so: QT) extends QT
 
+/* Type des transformations de quadtrees (rotation, mirroitage, etc). */
 type Transformation = QT => QT
 
 trait Quadtrees {
@@ -79,5 +79,16 @@ trait Quadtrees {
     * @return le quadtree qt après les transformations.
     */
   def transform(qt: QT, fs: List[Transformation]): QT
+
+  // **************************************************************************** \\
+  // *                               file_to_quadtree                           * \\
+  // **************************************************************************** \\
+
+  /**
+    * @param filename le nom du fichier d'image (chemin relatif au projet sbt)
+    *                 au format jpg ou png.
+    * @return le quadtree associé à l'image.
+    */
+  def file_to_quadtree(filename: String): QT
 
 }

@@ -21,43 +21,51 @@ object ImpMatricesVector extends Matrices {
     Vector.fill[Elt](p)(e)
   }
 
-  /** @param m une matrice.
-    * @param nl la nouvelle ligne.
-    * @param i l'emplacement de nl.
-    * @return la matrice m où la i-ème ligne vaut nl.
-    * @note si m possède moins de i lignes, elle reste inchangée.
+  /**
+    * @param v un vecteur de taille n.
+    * @param e un élément par défaut.
+    * @param k un entier naturel.
+    * @return le vecteur de taille n + k constitué des éléments de v
+    *         ainsi que de k éléments e.
     */
-  private def set_matrix_line[Elt](m: T[Elt], nl: Vector[Elt], i: Int): T[Elt] = {
-
-    m match {
-
-      case l :+ ls => {
-        if i == 0 then Vector(nl) :+ ls
-        else set_matrix_line(Vector(ls), nl, i - 1)
-      }
-
-      case _ => m
+  private def add_elements[Elt](v: Vector[Elt], e: Elt, k: Int): Vector[Elt] = {
+    k match {
+      case 0 => v
+      case _ => add_elements(v, e, k - 1) :+ e
     }
   }
 
-  /** @param v un vecteur.
-    * @param e le nouvel élément.
-    * @param i l'indice du nouvel élément.
-    * @return le vecteur v où le i-ème élément vaut e.
-    * @note par convention, le premier élément de v est à l'indice 0.
-    *       si le vecteur a moins de i éléments, elle reste inchangée.
+  /**
+    * @param m une matrice.
+    * @param e un élément par défaut.
+    * @param k le nombre de lignes à ajouter.
+    * @return la matrice m avec k lignes de plus, contenant toutes
+    *         uniquement l'élément e.
     */
-  private def set_vector_element[Elt](v: Vector[Elt], e: Elt, i: Int): Vector[Elt] = {
+  private def add_lines[Elt](m: T[Elt], e: Elt, k: Int): T[Elt] = {
 
-    v match {
-
-      case x :+ xs => {
-        if i == 0 then Vector(e) :+ xs
-        else set_vector_element(Vector(xs), e, i - 1)
-      }
-
-      case _     => v
+    val (_, p) = get_dimensions(m)
+    
+    k match {
+      case 0 => m
+      case _ => add_lines(m, e, k - 1) :+ add_elements(Vector(), e, p)
     }
+  }
+
+  /**
+    * @param m une matrice.
+    * @param e un élément par défaut.
+    * @param k le nombre de colonnes à ajouter.
+    * @return la matrice m avec k colonnes de plus, contenant toutes
+    *         uniquement l'élément e.
+    */
+  private def add_columns[Elt](m: T[Elt], e: Elt, k: Int): T[Elt] = {
+
+    k match {
+      case 0 => m
+      case _ => m.map(l => add_elements(l, e, k))
+    }
+    
   }
 
   // **************************************************************************** \\
@@ -77,7 +85,7 @@ object ImpMatricesVector extends Matrices {
       case 0 => Vector()
       case _ => init_matrix(n - 1, p, e) :+ init_vector(p, e)
     }
-    
+
   }
 
   /** @param m une matrice.
@@ -100,8 +108,9 @@ object ImpMatricesVector extends Matrices {
 
     val (n, p) = get_dimensions(m)
 
-    if (i < n && j < p) then Some(m(i)(j))
-    else None
+    if (i >= n || j >= p) then None
+    
+    else Some(m(i)(j))
   }
 
   /** @param m une matrice.
@@ -112,22 +121,48 @@ object ImpMatricesVector extends Matrices {
     */
   def set_element[Elt](m: T[Elt], i: Int, j: Int, e: Elt): T[Elt] = {
 
-    val (n, _) = get_dimensions(m)
-    
-    if i >= n then {
+    val (n, p) = get_dimensions(m)
+
+    if i >= n || j >= p then {
       m
     } else {
-      val nl: Vector[Elt] = set_vector_element(m(i), e, j)
-      set_matrix_line(m, nl, i)
+      val new_line: Vector[Elt] = m(i).updated(j, e)
+      m.updated(i, new_line)
     }
-    
+
   }
-  
+
+  /** @param lines une liste de listes de même taille.
+    * @return la matrice formée de la liste de listes, si possible.
+    */
+  def list_to_matrix[Elt](lines: List[List[Elt]]): Option[T[Elt]] = {
+
+    val hasMatrixShape = lines.length == 0 || lines.forall(l => l.length == lines.head.length)
+
+    if !hasMatrixShape then None
+    else Some(lines.map(line => line.toVector).toVector)
+
+  }
+
   /** @param m une matrice.
-    * @return la liste des éléments de m, ordonnés ligne par ligne.
+    * @return la liste des éléments de m, ordonnés dans le sens de lecture.
     */
   def matrix_to_list[Elt](m: T[Elt]): List[Elt] = {
     m.foldRight(Nil: List[Elt])((l, acc) => l.toList ++ acc)
+  }
+
+  /** @param m une matrice de taille n * p.
+    * @param e l'élément comblant les nouvelles cases.
+    * @return la matrice m carrée de taille max(n, p), dont les
+    *         nouveaux éléments valent colorTransparent.
+    */
+  def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt] = {
+    
+    val (n, p) = get_dimensions(m)
+
+    if n > p then add_columns(m, e, n - p)
+    else if n < p then add_lines(m, e, p - n)
+    else m
   }
 
 }
