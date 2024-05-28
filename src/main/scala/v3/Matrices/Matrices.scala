@@ -1,6 +1,25 @@
-package PRO2.projet.v2
+package PRO2.projet.v3
 
 import fr.istic.scribble.*
+
+/* 
+
+  On propose 3 implémentations des Matrices :
+    - la première, par une liste de listes de même taille.
+    - la deuxième, par un vecteur de vecteurs de même taille.
+    - la troisième, par un case class contenant :
+        * une table d'association (Int, Int) -> Elt
+        * les dimensions de la matrice.
+        * une valeur par défaut.
+    
+    La complexité des différentes opérations élémentaires
+    sur de telles structures :
+    https://docs.scala-lang.org/overviews/collections/performance-characteristics.html
+
+    En particulier, on remarque que les deux dernières implémentations
+    sont nettement plus efficaces.
+
+ */
 
 trait Matrices {
 
@@ -53,4 +72,5 @@ trait Matrices {
     *         nouveaux éléments valent colorTransparent.
     */
   def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt]
+  
 }
