@@ -1,6 +1,7 @@
 package PRO2.projet.v3
 
 import fr.istic.scribble.*
+import java.util.Scanner;
 
 import MatrixConversions.*
 
@@ -40,10 +41,12 @@ object ProgrammeUtilisateur extends App {
   def my_transformation(qt: QT) = {
 
     val transfos = 
-      service_QT.flip_horizontal
-      :: service_QT.flip_vertical
-      :: color_chaos // transformation créée par l'utilisateur
-      :: service_QT.darken
+
+      service_QT.rotation_right
+      // :: service_QT.flip_horizontal
+      // :: service_QT.flip_vertical
+      // :: color_chaos
+      // :: service_QT.darken
       // :: service_QT.darken
       :: Nil
 
@@ -66,6 +69,19 @@ object ProgrammeUtilisateur extends App {
 
   val image = service_QT.quadtree_to_image(quadtree_transformed, grid, size_order)
 
-  draw(image)
+  // draw(image)
 
+  // **************************************************************************** \\
+  // *                          Application réactive                            * \\
+  // **************************************************************************** \\
+
+  bigbang(ImageEditor(service_QT))
+
+
+  /*
+  val scanner = new Scanner(System.in)
+  println("Enter your name : ")
+  val a = scanner.nextLine()
+  println("My name is : "+a)
+   */
 }
