@@ -47,7 +47,7 @@ class UtilsState(service_QT: Quadtrees) {
     } else if !click_in_edit && m == Edit then {
       Load
     } else {
-        m
+      m
     }
 
   }
@@ -64,11 +64,9 @@ class UtilsState(service_QT: Quadtrees) {
   private def load_image(s: State): State = {
 
     val image_path = s.input
-    val (new_qt, d) = service_QT.file_to_quadtree_and_dimensions(image_path)
+    val new_qt = service_QT.file_to_quadtree(image_path)
 
-    val n = get_size_order(d._1, d._2)
-    
-    val new_qte = QTE(new_qt, (WIDTH / 2, HEIGHT / 2), false, d, n)
+    val new_qte = QTE(new_qt, (WIDTH / 2, HEIGHT / 2), false, 8)
     val new_elements = new_qte +: s.elements
     val new_selected = Some(new_elements.length - 1)
 
@@ -97,14 +95,44 @@ class UtilsState(service_QT: Quadtrees) {
     }
   }
 
-  /**
-    * @param s l'état de l'application, en mode Edit ou Load.
+  /** @param s l'état de l'application, en mode Edit ou Load.
     * @param c la position de la souris.
     * @return le nouvel état, en ayant changé de sélection si besoin.
     */
   private def update_select_on_click(s: State, c: Position): State = {
     val new_s = s.copy(mode = update_mode(s.mode, c))
     new_s.copy(selected = get_from_click(new_s.elements, c, 0))
+  }
+
+  // DRAW PIXEL
+  def draw_pixel(qte: QTE, pixel: Position, color: Color): QTE = {
+
+    // Caractéristiques du quadtree sélectionné.
+    val qt = qte.quadtree
+    val qt_height = hauteur(qt)
+    val qt_length = math.pow(2, qt_height + 1).toInt
+
+    println(s"QT: height = $qt_height, length = $qt_length")
+
+    val m = math.pow(2, qte.size_order).toInt / qt_length
+
+    // Coordonnées dans la fenêtre.
+    val (qte_x, qte_y) = qte.position
+    val img_length = qt_length * m
+    val (img_x, img_y) = (qte_x - img_length / 2, qte_y - img_length / 2) // coin en haut à gauche de l'image
+
+    println(s"(qte_x, qte_y) = ${qte.position}, img_length = $img_length, (img_x, img_y) = (${img_x}, ${img_y})")
+    
+    // Coordonnées dans le quadtree.
+    val (p_x, p_y) = pixel
+    val qt_pixel = ((p_y.toInt - img_y) / m, (p_x.toInt - img_x) / m)
+    val qt_center = (qt_length / 2, qt_length / 2)
+
+    println(s"pixel = $pixel, qt_pixel = $qt_pixel, qt_center = $qt_center")
+    
+    val qt_edited = update_pixel(qt, color, qt_pixel, qt_center, qt_height + 1)
+    qte.copy(quadtree = qt_edited)
+
   }
 
   // **************************************************************************** \\
@@ -195,7 +223,7 @@ class UtilsState(service_QT: Quadtrees) {
 
       // DÉPLACEMENT -> déplacer la sélection s'il y en a une.
       case MouseMove(x, y) => {
-        
+
         update_selected(s, update_position((x.toInt, y.toInt)))
       }
 
@@ -213,22 +241,17 @@ class UtilsState(service_QT: Quadtrees) {
     e match {
 
       case MouseClick(x, y) => {
-        get_from_click(s.elements, (x.toInt, y.toInt), 0) match {
 
-          case None => s
-          case Some(i) => {
-
-            val qte = s.elements(i)
-            val size_order_qt = next_pow_of_2(math.max(qte.dimensions._1, qte.dimensions._2), 0)
-            val length_image = math.pow(2, size_order_qt).toInt
-            println(s"length = $size_order_qt, length_image = $length_image")
-
-            val coef = math.pow(2, qte.size_order - size_order_qt).toInt
-
-            val new_qt = update_pixel(uncompress(qte.quadtree, size_order_qt), size_order_qt, qte.position, (y.toInt, x.toInt), RED, coef)
-            val new_qte = qte.copy(quadtree = new_qt)
-
-            s.copy(elements = s.elements.updated(i, new_qte))
+        if s.pencil.drawing then {
+          s.copy(pencil = s.pencil.copy(drawing = false))
+        } else {
+          val pixel = (x.toInt, y.toInt)
+          get_from_click(s.elements, pixel, 0) match {
+            case None => s
+            case Some(i) => {
+              val new_qt = draw_pixel(s.elements(i), pixel, s.pencil.color)
+              s.copy(elements = s.elements.updated(i, new_qt))
+            }
           }
         }
       }

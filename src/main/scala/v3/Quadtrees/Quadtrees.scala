@@ -22,11 +22,6 @@ trait Quadtrees {
     */
   def file_to_quadtree(filename: String): QT
 
-  /** @param filename le nom du fichier d'image (chemin relatif au projet sbt) au format jpg ou png.
-    * @return la paire constituée du quadtree associé à l'image et des dimensions de l'image filename.
-    */
-  def file_to_quadtree_and_dimensions(filename: String): (QT, (Int, Int))
-
   /** @param qt un quadtree.
     * @param grid si on affiche la grille des subdivisions ou non.
     * @param size_order l'ordre de la taille de l'image, correspondant à une

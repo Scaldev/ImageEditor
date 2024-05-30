@@ -18,13 +18,18 @@ case object Load extends Mode
 case object Move extends Mode
 case object Draw extends Mode
 
+// Pencil
+case class Pencil(
+  drawing: Boolean,
+  color: Color
+)
+
 // Quadtree (as Elements)
 case class QTE(
     quadtree: QT,
     position: (Int, Int),
     grid: Boolean,
-    dimensions: (Int, Int),
-    size_order: Int
+    size_order: Int,
 )
 
 // STATE
@@ -33,8 +38,8 @@ private case class State(
     history: List[Transformation],
     selected: Option[Int],
     mode: Mode,
+    pencil: Pencil,
     input: String,
-    ctrl: Boolean
 )
 
 // ****************************************************************************************** \\
@@ -67,7 +72,8 @@ class ImageEditor(service_QT: Quadtrees) extends Universe[State] {
 
   def init: State = {
 
-    State(Vector(), Nil, None, Load, "images/templates/meadow.png", false)
+    val pencil = Pencil(false, BLACK)
+    State(Vector(), Nil, None, Load, pencil, "images/templates/meadow.png")
   }
 
   def toImage(s: State): Image = {

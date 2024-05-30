@@ -32,7 +32,7 @@ object Utils {
       case KeyDelete   => str.dropRight(1)
       case _           => str
     }
-    
+
   }
 
   def next_pow_of_2(x: Int, n: Int): Int = {
@@ -42,6 +42,18 @@ object Utils {
 
   def get_size_order(x: Int, y: Int): Int = {
     next_pow_of_2(math.max(x, y), 0)
+  }
+
+  def hauteur(qt: QT): Int = {
+    qt match {
+      case C(_) => -1
+      case N(no, ne, se, so) => {
+        1 + math.max(
+          math.max(hauteur(no), hauteur(ne)),
+          math.max(hauteur(so), hauteur(se))
+        )
+      }
+    }
   }
 
 }

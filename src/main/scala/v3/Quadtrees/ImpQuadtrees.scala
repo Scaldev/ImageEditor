@@ -173,11 +173,42 @@ object ImpQuadtrees extends Quadtrees {
 
   }
 
+  // **************************************************************************** \\
+  // *                           compress & decompress                          * \\
+  // **************************************************************************** \\
+
   def compress(qt: QT): QT = {
     qt match {
       case C(c) => C(c)
       case N(no, ne, se, so) =>
         compress_node(compress(no), compress(ne), compress(se), compress(so))
+    }
+  }
+
+  /** @param qt un quadtree de taille t.
+    * @param n un entier naturel supérieur ou égal à t.
+    * @return le quadtree qt dont toutes les feuilles sont de profondeur n.
+    */
+  def decompress(qt: QT, s: Int): QT = {
+
+    val d = decompress
+
+    qt match {
+
+      case C(c) => {
+        s match {
+          case 0 => C(c)
+          case _ => { // extension de l'arbre.
+            val n = d(C(c), s - 1)
+            N(n, n, n, n)
+          }
+        }
+      }
+
+      case N(no, ne, se, so) => {
+        N(d(no, s - 1), d(ne, s - 1), d(se, s - 1), d(so, s - 1))
+      }
+
     }
   }
 
@@ -225,8 +256,7 @@ object ImpQuadtrees extends Quadtrees {
   // *                               file_to_quadtree                           * \\
   // **************************************************************************** \\
 
-  /**
-    * @param filename le nom du fichier d'image (chemin relatif au projet sbt)
+  /** @param filename le nom du fichier d'image (chemin relatif au projet sbt)
     *                 au format jpg ou png.
     * @return le quadtree associé à l'image.
     */
@@ -238,18 +268,5 @@ object ImpQuadtrees extends Quadtrees {
 
     compress(qt)
   }
-
-  def file_to_quadtree_and_dimensions(filename: String): (QT, (Int, Int)) = {
-    
-    val (m, d): (service_M.T[Color], (Int, Int)) = image_to_matrix_and_dimensions(filename)
-
-    val qt: QT = matrix_to_quadtree(m)
-
-    println(s"FTQAD : d = $d")
-
-    (compress(qt), d)
-  }
-
-  // ************************************************* \\
 
 }

@@ -32,25 +32,20 @@ class UtilsElements(service_QT: Quadtrees) {
 
         val edges_color = if n == 0 then RED else TRANSPARENT
 
-        val s = get_size_order(e.dimensions._1, e.dimensions._2)
+        val length = math.pow(2, e.size_order).toFloat
 
         // Superposition des images.
         val top = service_QT.quadtree_to_image(e.quadtree, e.grid, e.size_order)
         val bot = convert_to_image(es, n - 1)
 
         // Déterminer les coordonnées de placement.
-        val length = math.pow(2, e.size_order).toInt
-        val coef_edges_length = math.pow(2, e.size_order - s)
 
         val i = (e.position._1 - length / 2).toFloat
         val j = (e.position._2 - length / 2).toFloat
 
-        val edges_width = (e.dimensions._1 * coef_edges_length).toFloat
-        val edges_height = (e.dimensions._2 * coef_edges_length).toFloat
-
         OnFrontAt(
           OnFrontAt(
-            LineColor(Rectangle(edges_width, edges_height), edges_color),
+            LineColor(Rectangle(length, length), edges_color),
             top,
             0,
             0
@@ -134,48 +129,61 @@ class UtilsElements(service_QT: Quadtrees) {
 
   // ************************** \\
 
+  /**
+    * @param qt un quadtree carré.
+    * @param color la couleur appliquée.
+    * @param pixel les coordonnées du pixel cliqué.
+    * @param p la position dans la matrice associée à la racine de qt.
+    * @param n le nombre de récursions avant de toucher les feuilles de qt.
+    * @return qt où la feuille associée au pixel cliqué est désormais de couleur color.
+    */
   def update_pixel(
       qt: QT,
-      n: Int,
-      c: Position,
-      p: Position,
       color: Color,
-      coef: Int
+      pixel: Position,
+      p: Position,
+      n: Int,
   ): QT = {
+
+    val (i, j) = pixel
+    val (x, y) = p
 
     (qt, n) match {
 
+      // Résolution maximale => c'est CE pixel que l'on modifie.
+      case (_, 0) => C(color)
+
+      // On est pas encore à la résolution maximale => refaire en décompressant la feuille.
+      case (C(c), _) => {
+        val node = N(C(c), C(c), C(c), C(c))
+        update_pixel(node, color, pixel, p, n)
+      }
+
+      // Récursion sur les noeuds du quadtree.
       case (N(no, ne, se, so), _) => {
 
-        val (x, y) = c
-        val (i, j) = p
-        val dc = math.floor(math.pow(2, n) / 4).toInt * coef
-        val df = math.floor(math.pow(2, n) / 4).toInt * coef
-
-        println(s"n = $n, (x = $x, y = $y), (i = $i, j = $j), (dc = $dc, df = $df)")
+        val d = math.pow(2, n - 2).toInt
 
         // HAUT-GAUCHE
         if i < x && j < y then {
-          N(update_pixel(no, n - 1, (x - dc, y - dc), p, color, coef), ne, se, so)
+          val new_no = update_pixel(no, color, pixel, (x - d, y - d), n - 1)
+          N(new_no, ne, se, so)
 
-          // HAUT-DROITE
+        // HAUT-DROITE
         } else if i < x && j >= y then {
-          N(no, update_pixel(ne, n - 1, (x - dc, y + dc), p, color, coef), se, so)
+          val new_ne = update_pixel(ne, color, pixel, (x - d, y + d), n - 1)
+          N(no, new_ne, se, so)
 
-          // BAS-GAUCHE
+        // BAS-GAUCHE
         } else if i >= x && j >= y then {
-          N(no, ne, update_pixel(se, n - 1, (x + dc, y + dc), p, color, coef), so)
+          val new_no = update_pixel(se, color, pixel, (x + d, y + d), n - 1)
+          N(no, ne, new_no, so)
 
-          // BAS-DROITE
+        // BAS-DROITE
         } else {
-          N(no, ne, se, update_pixel(so, n / 2, (x + dc, y - dc), p, color, coef))
-
+          val new_so = update_pixel(so, color, pixel, (x + d, y - d), n - 1)
+          N(no, ne, se, new_so)
         }
-      }
-
-      case _ => {
-        println("rip")
-        C(color)
       }
 
     }
