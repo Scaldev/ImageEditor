@@ -2,6 +2,7 @@ package PRO2.projet.v3
 
 import fr.istic.scribble.*
 import fr.istic.pro2.qtreeslib.*
+import PRO2.projet.v0.ProgrammeUtilisateur.size_order
 
 val colorFiller = TRANSPARENT
 
@@ -129,6 +130,22 @@ object MatrixConversions {
     }
   }
 
+  def get_image_height(m: service_M.T[Color]): Int = {
+    val (n, p) = service_M.get_dimensions(m)
+    (1 until n).toList
+      .map(i => service_M.get_element(m, i, p / 2).get)
+      .filter(c => c != TRANSPARENT)
+      .length + 1
+  }
+
+  def get_image_width(m: service_M.T[Color]): Int = {
+    val (n, p) = service_M.get_dimensions(m)
+    (1 until p).toList
+      .map(j => service_M.get_element(m, n / 2, j).get)
+      .filter(c => c != TRANSPARENT)
+      .length + 1
+  }
+
   // **************************************************************************** \\
   // *                                                                          * \\
   // *                            FONCTIONS PUBLIQUES                           * \\
@@ -152,6 +169,20 @@ object MatrixConversions {
     image_to_matrix_aux(filename, m, h - 1)
   }
 
+  def image_to_matrix_and_dimensions(
+      filename: String
+  ): (service_M.T[Color], (Int, Int)) = {
+
+    val (w, h) = getDimensions(filename)
+    val m = service_M.init_matrix(h, w, colorFiller)
+
+    // print("Nombre de lignes de pixels à charger :   ")
+    val m_image = image_to_matrix_aux(filename, m, h - 1)
+    val d = get_image_dimensions(m_image)
+
+    (m_image, d)
+  }
+
   // **************************************************************************** \\
   // *                          matrix_to_quadtree                              * \\
   // **************************************************************************** \\
@@ -167,5 +198,42 @@ object MatrixConversions {
 
     matrix_to_quadtree_aux(square_m, c, n)
   }
+
+  // **************************************************************************** \\
+  // *                          get_image_dimensions                            * \\
+  // **************************************************************************** \\
+
+  def get_image_dimensions(m: service_M.T[Color]): Dimensions = {
+    (get_image_width(m), get_image_height(m))
+  }
+
+  def uncompress(qt: QT, s: Int): QT = {
+
+    qt match {
+
+      case C(c) => {
+
+        s match {
+          case 0 => C(c)
+          case _ => {
+            val n = uncompress(C(c), s - 1)
+            N(n, n, n, n)
+          }
+
+        }
+      }
+
+      case N(no, ne, se, so) => {
+        N(
+          uncompress(no, s - 1),
+          uncompress(ne, s - 1),
+          uncompress(se, s - 1),
+          uncompress(so, s - 1)
+        )
+      }
+
+    }
+  }
+  
 
 }

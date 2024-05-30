@@ -1,7 +1,6 @@
 package PRO2.projet.v3
 
 import fr.istic.scribble.*
-import java.util.Scanner;
 
 import MatrixConversions.*
 
@@ -77,11 +76,4 @@ object ProgrammeUtilisateur extends App {
 
   bigbang(ImageEditor(service_QT))
 
-
-  /*
-  val scanner = new Scanner(System.in)
-  println("Enter your name : ")
-  val a = scanner.nextLine()
-  println("My name is : "+a)
-   */
 }

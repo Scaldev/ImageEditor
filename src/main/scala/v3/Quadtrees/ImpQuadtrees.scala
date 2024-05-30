@@ -95,7 +95,7 @@ object ImpQuadtrees extends Quadtrees {
     */
   private def color_gray(c: Color): Color = {
     val gray: Int = (c.red + c.green + c.blue) / 3
-    Color(gray, gray, gray, 255)
+    Color(gray, gray, gray, c.alpha)
   }
 
   /** @param coef le taux de lumonosité par lequel multiplier chaque couleur.
@@ -104,7 +104,7 @@ object ImpQuadtrees extends Quadtrees {
     */
   private def color_map(coef: Double)(c: Color): Color = {
     val (r, g, b): RGB = brightness(c.red, c.green, c.blue, coef)
-    Color(r, g, b, 255)
+    Color(r, g, b, c.alpha)
   }
 
   /** @param qt un quadtree.
@@ -238,5 +238,18 @@ object ImpQuadtrees extends Quadtrees {
 
     compress(qt)
   }
+
+  def file_to_quadtree_and_dimensions(filename: String): (QT, (Int, Int)) = {
+    
+    val (m, d): (service_M.T[Color], (Int, Int)) = image_to_matrix_and_dimensions(filename)
+
+    val qt: QT = matrix_to_quadtree(m)
+
+    println(s"FTQAD : d = $d")
+
+    (compress(qt), d)
+  }
+
+  // ************************************************* \\
 
 }

@@ -166,5 +166,9 @@ object ImpMatricesVector extends Matrices {
     else if n < p then add_lines(m, e, p - n)
     else m
   }
+  
+  def translation[Elt](m: T[Elt], v: (Int, Int)): T[Elt] = {
+    ???
+  }
 
 }

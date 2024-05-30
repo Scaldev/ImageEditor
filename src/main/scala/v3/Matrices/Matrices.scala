@@ -21,6 +21,8 @@ import fr.istic.scribble.*
 
  */
 
+type Dimensions = (Int, Int)
+
 trait Matrices {
 
   type T[Elt]
@@ -35,7 +37,7 @@ trait Matrices {
   /** @param m une matrice.
     * @return le couple (hauteur, largeur) de la matrice.
     */
-  def get_dimensions[Elt](m: T[Elt]): (Int, Int)
+  def get_dimensions[Elt](m: T[Elt]): Dimensions
 
   /** @param m une matrice de taille n * p.
     * @param i un numéro de ligne.
@@ -72,5 +74,7 @@ trait Matrices {
     *         nouveaux éléments valent colorTransparent.
     */
   def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt]
+
+  def translation[Elt](m: T[Elt], v: (Int, Int)): T[Elt]
   
 }
