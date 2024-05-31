@@ -20,15 +20,7 @@ object MatrixConversions {
   // *                             image_to_matrix                              * \\
   // **************************************************************************** \\
 
-  /** @param i un entier naturel compris entre 0 et 99.
-    * Supprime dans la console l'entier précédent et affiche à la place i.
-    */
-  private def log_remaining_lines(i: Int): Unit = {
-
-    print(s"\u0008\u0008${if i < 10 then " " else ""}$i")
-  }
-
-  /** @param filename nom de fichier d'une image.
+  /** @param f associe à une coordonnée sa couleur.
     * @param m la matrice associée à l'image.
     * @param i la ligne de l'image lue (fixée).
     * @param j la colonne de l'image lue.
@@ -36,56 +28,54 @@ object MatrixConversions {
     *         aux couleurs de la i-ème ligne de l'image de nom filename.
     */
   private def image_line_to_matrix_line_aux(
-      filename: String,
+      f: (Int, Int) => Color,
       m: service_M.T[Color],
       i: Int,
       j: Int
   ): service_M.T[Color] = {
 
     j match {
-      case 0 => service_M.set_element(m, i, 0, readColor(filename)(i, 0))
+      case 0 => service_M.set_element(m, i, 0, f(i, 0))
       case _ => {
-        val new_m = service_M.set_element(m, i, j, readColor(filename)(i, j))
-        image_line_to_matrix_line_aux(filename, new_m, i, j - 1)
+        val new_m = service_M.set_element(m, i, j, f(i, j))
+        image_line_to_matrix_line_aux(f, new_m, i, j - 1)
       }
     }
   }
 
-  /** @param filename nom de fichier d'une image.
+  /** @param f associe à une coordonnée sa couleur.
     * @param m la matrice associée à l'image.
     * @param i la ligne de l'image lue.
     * @return la matrice m dont les couleurs à la i-ème ligne correspondent
     *         aux couleurs de la i-ème ligne de l'image de nom filename.
     */
   private def image_line_to_matrix_line(
-      filename: String,
+      f: (Int, Int) => Color,
       m: service_M.T[Color],
       i: Int
   ): service_M.T[Color] = {
 
     val (_, p) = service_M.get_dimensions(m)
-    image_line_to_matrix_line_aux(filename, m, i, p)
+    image_line_to_matrix_line_aux(f, m, i, p)
   }
 
-  /** @param filename nom de fichier d'une image.
+  /** @param f associe à une coordonnée sa couleur..
     * @param m la matrice associée à l'image.
     * @param i la ligne de l'image lue.
     * @return la matrice m dont les couleurs à chaque ligne correspondent aux couleurs
     *         de la ligne associée dans l'image de nom filename.
     */
   private def image_to_matrix_aux(
-      filename: String,
+      f: (Int, Int) => Color,
       m: service_M.T[Color],
       i: Int
   ): service_M.T[Color] = {
 
-    // log_remaining_lines(i)
-
     i match {
-      case 0 => image_line_to_matrix_line(filename, m, 0)
+      case 0 => image_line_to_matrix_line(f, m, 0)
       case _ => {
-        val new_m = image_line_to_matrix_line(filename, m, i)
-        image_to_matrix_aux(filename, new_m, i - 1)
+        val new_m = image_line_to_matrix_line(f, m, i)
+        image_to_matrix_aux(f, new_m, i - 1)
       }
     }
   }
@@ -148,9 +138,9 @@ object MatrixConversions {
 
     val (w, h) = getDimensions(filename)
     val m = service_M.init_matrix(h, w, colorFiller)
+    val f = readColor(filename)
 
-    // print("Nombre de lignes de pixels à charger :   ")
-    image_to_matrix_aux(filename, m, h - 1)
+    image_to_matrix_aux(f, m, h - 1)
   }
 
   // **************************************************************************** \\

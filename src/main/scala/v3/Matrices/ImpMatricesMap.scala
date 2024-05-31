@@ -206,10 +206,6 @@ object ImpMatricesMap extends Matrices {
 
     MT(new_t, d, d)
   }
-  
-  def translation[Elt](m: T[Elt], v: (Int, Int)): T[Elt] = {
-    ???
-  }
 
 
 }

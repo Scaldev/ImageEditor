@@ -39,14 +39,12 @@ object ProgrammeUtilisateur extends App {
     */
   def my_transformation(qt: QT) = {
 
-    val transfos = 
-
-      service_QT.rotation_right
-      // :: service_QT.flip_horizontal
-      // :: service_QT.flip_vertical
-      // :: color_chaos
-      // :: service_QT.darken
-      // :: service_QT.darken
+    val transfos = service_QT.rotation_right
+      :: service_QT.flip_horizontal
+      :: service_QT.flip_vertical
+      :: color_chaos
+      :: service_QT.darken
+      :: service_QT.darken
       :: Nil
 
     service_QT.transform(qt, transfos)
@@ -54,9 +52,11 @@ object ProgrammeUtilisateur extends App {
   }
 
   // **************************************************************************** \\
-  // *                                Manipulation                              * \\
+  // *                              Via l'interface                             * \\
   // **************************************************************************** \\
 
+  /*
+  
   // Paramètres
   val grid: Boolean = false
   val size_order: Int = 9
@@ -68,12 +68,16 @@ object ProgrammeUtilisateur extends App {
 
   val image = service_QT.quadtree_to_image(quadtree_transformed, grid, size_order)
 
-  // draw(image)
+   draw(image)
+
+   */
 
   // **************************************************************************** \\
   // *                          Application réactive                            * \\
   // **************************************************************************** \\
 
-  bigbang(ImageEditor(service_QT))
+  val customs = color_chaos :: Nil
+  
+  bigbang(ImageEditor(service_QT, customs))
 
 }

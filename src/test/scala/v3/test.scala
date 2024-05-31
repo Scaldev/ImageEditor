@@ -249,8 +249,10 @@ class MySuite extends munit.FunSuite {
   test("Matrices : set_element -> élément présent") {
 
     val m = service_M.init_matrix(2, 3, 0)
-
-    val obtained = service_M.matrix_to_list(service_M.set_element(m, 1, 2, 42))
+    println(m)
+    val l = service_M.set_element(m, 1, 2, 42)
+    println(l)
+    val obtained = service_M.matrix_to_list(l)
     val expected = 0 :: 0 :: 0 :: 0 :: 0 :: 42 :: Nil
 
     assertEquals(obtained, expected)

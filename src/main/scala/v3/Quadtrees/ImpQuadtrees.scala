@@ -119,7 +119,7 @@ object ImpQuadtrees extends Quadtrees {
   }
 
   /** @param qt un quadtree.
-    * @param node_map une fonction associant un noeur à sa nouvelle valeur
+    * @param node_map une fonction associant un noeud à sa nouvelle valeur
     * @return le quadtree où tous les noeuds sont passés par node_map.
     */
   private def transfo_subdiv(qt: QT, node_map: N => N): QT = {
@@ -159,6 +159,23 @@ object ImpQuadtrees extends Quadtrees {
   // **************************************************************************** \\
 
   // **************************************************************************** \\
+  // *                               file_to_quadtree                           * \\
+  // **************************************************************************** \\
+
+  /** @param filename le nom du fichier d'image (chemin relatif au projet sbt)
+    *                 au format jpg ou png.
+    * @return le quadtree associé à l'image.
+    */
+  def file_to_quadtree(filename: String): QT = {
+
+    val m: service_M.T[Color] = image_to_matrix(filename)
+
+    val qt: QT = matrix_to_quadtree(m)
+
+    compress(qt)
+  }
+
+  // **************************************************************************** \\
   // *                                quadtrees                                 * \\
   // **************************************************************************** \\
 
@@ -185,10 +202,6 @@ object ImpQuadtrees extends Quadtrees {
     }
   }
 
-  /** @param qt un quadtree de taille t.
-    * @param n un entier naturel supérieur ou égal à t.
-    * @return le quadtree qt dont toutes les feuilles sont de profondeur n.
-    */
   def decompress(qt: QT, s: Int): QT = {
 
     val d = decompress
@@ -252,21 +265,24 @@ object ImpQuadtrees extends Quadtrees {
     fs.foldLeft(qt)((acc, f) => apply_transform(acc, f))
   }
 
-  // **************************************************************************** \\
-  // *                               file_to_quadtree                           * \\
-  // **************************************************************************** \\
+  def overlay(qt1: QT, qt2: QT): QT = {
 
-  /** @param filename le nom du fichier d'image (chemin relatif au projet sbt)
-    *                 au format jpg ou png.
-    * @return le quadtree associé à l'image.
-    */
-  def file_to_quadtree(filename: String): QT = {
+    (qt1, qt2) match {
 
-    val m: service_M.T[Color] = image_to_matrix(filename)
+      case (C(c), C(TRANSPARENT)) => C(c)
+      case (C(_), C(c))           => C(c)
 
-    val qt: QT = matrix_to_quadtree(m)
+      case (N(no1, ne1, se1, so1), N(no2, ne2, se2, so2)) => {
 
-    compress(qt)
+        val new_no = overlay(no1, no2)
+        val new_ne = overlay(ne1, ne2)
+        val new_se = overlay(se1, se2)
+        val new_so = overlay(so1, so2)
+
+        N(new_no, new_ne, new_se, new_so)
+      }
+      case _ => qt1 // impossible car qt2 et qt2 sont de même taille.
+    }
   }
 
 }

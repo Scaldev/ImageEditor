@@ -33,35 +33,7 @@ object ImpMatricesList extends Matrices {
       case l :: ls => if i == 0 then Some(l) else get_matrix_line(ls, i - 1)
     }
   }
-
-  /** @param m une matrice.
-    * @param nl la nouvelle ligne.
-    * @param i l'emplacement de nl.
-    * @return la matrice m où la i-ème ligne vaut nl.
-    * @note si m possède moins de i lignes, elle reste inchangée.
-    */
-  private def set_matrix_line[Elt](m: T[Elt], nl: List[Elt], i: Int): T[Elt] = {
-    m match {
-      case Nil => Nil
-      case l :: ls =>
-        if i == 0 then nl :: ls else set_matrix_line(ls, nl, i - 1)
-    }
-  }
-
-  /** @param l une liste.
-    * @param e le nouvel élément.
-    * @param i l'indice du nouvel élément.
-    * @return la liste l où le i-ème élément vaut e.
-    * @note par convention, le premier élément de l est à l'indice 0.
-    *       si la liste a moins de i éléments, elle reste inchangée.
-    */
-  private def set_list_element[Elt](l: List[Elt], e: Elt, i: Int): List[Elt] = {
-    l match {
-      case Nil     => Nil
-      case x :: xs => if i == 0 then e :: xs else set_list_element(l, e, i - 1)
-    }
-  }
-
+  
   /**
     * @param l une liste.
     * @param e un élément.
@@ -88,7 +60,7 @@ object ImpMatricesList extends Matrices {
     
     k match {
       case 0 => m
-      case _ => add_lines(m, e, k) :+ list_of_element(Nil, e, p)
+      case _ => add_lines(m, e, k - 1) :+ list_of_element(Nil, e, p)
     }
   }
 
@@ -163,13 +135,12 @@ object ImpMatricesList extends Matrices {
     */
   def set_element[Elt](m: T[Elt], i: Int, j: Int, e: Elt): T[Elt] = {
 
-    get_matrix_line(m, i) match {
-      case None => m
-      case Some(l) => {
-        val nl: List[Elt] = set_list_element(l, e, j)
-        set_matrix_line(m, nl, i)
-      }
-    }
+    val (n, p) = get_dimensions(m)
+
+    if 0 <= i && i < n && 0 <= j && j < p then
+      m.updated(i, m(i).updated(j, e))
+    else
+      m
 
   }
 
@@ -206,10 +177,6 @@ object ImpMatricesList extends Matrices {
     if n > p then add_columns(m, e, n - p)
     else if n < p then add_lines(m, e, p - n)
     else m
-  }
-  
-  def translation[Elt](m: T[Elt], v: (Int, Int)): T[Elt] = {
-    ???
   }
 
 

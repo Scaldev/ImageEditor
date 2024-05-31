@@ -74,7 +74,5 @@ trait Matrices {
     *         nouveaux éléments valent colorTransparent.
     */
   def matrix_to_square[Elt](m: T[Elt], e: Elt): T[Elt]
-
-  def translation[Elt](m: T[Elt], v: (Int, Int)): T[Elt]
   
 }

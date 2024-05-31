@@ -36,6 +36,12 @@ trait Quadtrees {
     */
   def compress(qt: QT): QT
 
+  /** @param qt un quadtree de taille t.
+    * @param n un entier naturel supérieur ou égal à t.
+    * @return le quadtree qt dont toutes les feuilles sont de profondeur n.
+    */
+  def decompress(qt: QT, i: Int): QT
+
   // **************************************************************************** \\
   // *                             transformations                              * \\
   // **************************************************************************** \\
@@ -80,5 +86,12 @@ trait Quadtrees {
     * @return le quadtree qt après les transformations.
     */
   def transform(qt: QT, fs: List[Transformation]): QT
+
+  /**
+    * @param qt1 un quadtree de hauteur n.
+    * @param qt2 un quadtree de hauteur n.
+    * @return la superposition de qt2 sur qt1.
+    */
+  def overlay(qt1: QT, qt2: QT): QT
 
 }
