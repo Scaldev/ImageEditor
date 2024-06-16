@@ -140,7 +140,7 @@ Cliquer sur une image différente de celle en sélection pendant ce mode superpo
 *Exemple d'utilisation en mode Select. Les images `plus.png` et `cross.png` ont été chargées, agrandies deux fois, déplacées et superposées.*
 </center>
 
-### 4. <u>Mode Draw (4).</u> <img height=16px src="images/icons/draw.png">
+### 5. <u>Mode Draw (4).</u> <img height=16px src="images/icons/draw.png">
 
 Le mode *Draw* permet de dessiner sur une image.
 
@@ -158,7 +158,7 @@ Ce mode est lié à un crayon, définit par :
 *Exemple d'utilisation en mode Draw. On a écrit "Hello!" sur en haut, et fait une rature au centre.*
 </center>
 
-### 4. <u>Mode Erase (5).</u> <img height=16px src="images/icons/erase.png">
+### 6. <u>Mode Erase (5).</u> <img height=16px src="images/icons/erase.png">
 
 Le mode *Erase* est similaire sur de nombreux points avec le mode Draw. En particulier, la gomme possède aussi une taille et un mode modifiable de la même manière. Elle applique systématiquement la couleur transparente sur les pixels rencontrés.
 
@@ -168,7 +168,7 @@ Le mode *Erase* est similaire sur de nombreux points avec le mode Draw. En parti
 *Exemple d'utilisation en mode Draw. On a gommé la rature.*
 </center>
 
-### 5. <u>Mode Eyedropper (6).</u> <img height=16px src="images/icons/eyedropper.png">
+### 7. <u>Mode Eyedropper (6).</u> <img height=16px src="images/icons/eyedropper.png">
 
 Le mode *Eyedropper* permet de sélectionner la couleur du pixel cliqué.
 
