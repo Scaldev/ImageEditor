@@ -14,7 +14,7 @@ Toutes les fonctionnalités demandées pour chaque version ont été implément�
 
 Des tests ont également été implémentés afin de vérifier que les différentes fonctions programmées soient fonctionnelles.
 
-### 1. <u>Fonctionnalités supplémentaires.</u>
+### 2. <u>Fonctionnalités supplémentaires.</u>
 
 **Version 1.**
 
@@ -38,7 +38,7 @@ Des tests ont également été implémentés afin de vérifier que les différen
 
 - fusionner deux quadtrees en superposant l'un sur l'autre.
 
-### 2. <u>Difficultés.</u>
+### 3. <u>Difficultés.</u>
 
 **Version 1.**
 
