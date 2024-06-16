@@ -2,8 +2,6 @@
 
 # Quatrees version 3
 
-*par REDOR Ewan et PACCINI Mathys*
-
 </center>
 
 ## I. Développement.
