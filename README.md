@@ -18,7 +18,7 @@ Un choix clé du développement de l'application a été l'implémentation de di
 
 # II. Fonctionnalités
 
-## 1. <u>Mode Command (0).</u> <img height=16px src="images/icons/command.png">
+## 1. <u>Mode Command (0).</u> <img height=20px src="images/icons/command.png">
 
 Par défaut, l'utilisateur est dans le mode *Command*. Cela signifie que les touches clavier sont mémorisées et écrites dans l'invité de commandes. Ce mode permet d'entrer les commandes disponibles :
 
@@ -35,7 +35,7 @@ On peut passer au mode `Command` en cliquant dans le rectangle de l'invité de c
 *Exemple d'utilisation de la console. Appuyer sur Entrée chargement l'image `meadow.png`.*
 
 
-## 2. <u>Mode Edit (1).</u> <img height=16px src="images/icons/edit.png">
+## 2. <u>Mode Edit (1).</u> <img height=20px src="images/icons/edit.png">
 
 Le mode *Edit* permet de manipuler l'image sélectionnée. On peut sélectionner une image en cliquant dessus, et la désélectionner en cliquant dans le vide. Si plusieurs images sont superposées, celle la plus au-dessus sera sélectionnée.
 
@@ -66,7 +66,7 @@ Appuyer sur certains touches lorsqu'une image est sélectionnée permet d'intér
 
 *Exemple d'utilisation en mode Edit.*
 
-## 3. <u>Mode Move (2).</u> <img height=16px src="images/icons/move.png">
+## 3. <u>Mode Move (2).</u> <img height=20px src="images/icons/move.png">
 
 Le mode *Move* permet de déplacer l'image sélectionnée dans la fenêtre. L'image ne peut pas sortir de la fenêtre.
 
@@ -78,7 +78,7 @@ Cliquer en ayant une image sélectionnée la pose, cliquer sur une image sans en
 *Exemple d'utilisation en mode Move. L'image est ici déplacée à gauche, en suivant le curseur.*
 </center>
 
-## 4. <u>Mode Select (3).</u> <img height=16px src="images/icons/select.png">
+## 4. <u>Mode Select (3).</u> <img height=20px src="images/icons/select.png">
 
 Le mode *Select* permet de sélectionner une seconde image.
 
@@ -88,7 +88,7 @@ Cliquer sur une image différente de celle en sélection pendant ce mode superpo
 
 *Exemple d'utilisation en mode Select. Les images `plus.png` et `cross.png` ont été chargées, agrandies deux fois, déplacées et superposées.*
 
-## 5. <u>Mode Draw (4).</u> <img height=16px src="images/icons/draw.png">
+## 5. <u>Mode Draw (4).</u> <img height=20px src="images/icons/draw.png">
 
 Le mode *Draw* permet de dessiner sur une image.
 
@@ -104,7 +104,7 @@ Ce mode est lié à un crayon, définit par :
 
 *Exemple d'utilisation en mode Draw. On a écrit "Hello!" sur en haut, et fait une rature au centre.*
 
-## 6. <u>Mode Erase (5).</u> <img height=16px src="images/icons/erase.png">
+## 6. <u>Mode Erase (5).</u> <img height=20px src="images/icons/erase.png">
 
 Le mode *Erase* est similaire sur de nombreux points avec le mode Draw. En particulier, la gomme possède aussi une taille et un mode modifiable de la même manière. Elle applique systématiquement la couleur transparente sur les pixels rencontrés.
 
@@ -112,7 +112,7 @@ Le mode *Erase* est similaire sur de nombreux points avec le mode Draw. En parti
 
 *Exemple d'utilisation en mode Draw. On a gommé la rature.*
 
-### 7. <u>Mode Eyedropper (6).</u> <img height=16px src="images/icons/eyedropper.png">
+### 7. <u>Mode Eyedropper (6).</u> <img height=20px src="images/icons/eyedropper.png">
 
 Le mode *Eyedropper* permet de sélectionner la couleur du pixel cliqué.
 
