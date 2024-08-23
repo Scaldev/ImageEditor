@@ -6,7 +6,7 @@ ImageEditor est une application réactive permettant de manipuler des images en 
 
 Les images peuvent recevoir des transformations (rotation, mirroitage, assombrissement... l'utilisateur peut même en ajouter des personnalisées). Les fonctionnalités élémentaires du dessin sont également présentes : pipette, crayon, gomme, ainsi qu'une commande pour directement sélectionner une couleur. On détaille plus loin le principe de chaque fonctionnalité.
 
-## 2. Une application réactive.**
+## 2. Une application réactive.
 
 On décrit ici le fonctionnement de l'application interactive. Les fonctionnalités depuis l'interface `Quadtrees` sont expliquées plus en détail dans le fichier `ancien_readme/README_V2.md`. A noter que ceux de la version 0 et 1 ne sont pas présents car contenus dans la version 2.
 
