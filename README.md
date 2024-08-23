@@ -30,10 +30,11 @@ Appuyer sur Entrée lance la commande, et le retour arrière est possible.
 
 On peut passer au mode `Command` en cliquant dans le rectangle de l'invité de commande. De même, on peut sortir de ce mode en appuyant dans la fenêtre d'édition au-dessus de l'invité de commande, où en appuyant sur les chiffres de 1 à 6 du clavier.
 
+<center>
 <img height=200px src="images/readme/app_command.png">
 
 *Exemple d'utilisation de la console. Appuyer sur Entrée chargement l'image `meadow.png`.*
-
+</center>
 
 ## 2. <u>Mode Edit (1).</u> <img height=20px src="images/icons/edit.png">
 
@@ -62,9 +63,11 @@ Appuyer sur certains touches lorsqu'une image est sélectionnée permet d'intér
 
     * appuyer sur `DEL` (retour arrière) supprime l'image.
 
+<center>
 <img height=200px src="images/readme/app_edit.png">
 
 *Exemple d'utilisation en mode Edit.*
+</center>
 
 ## 3. <u>Mode Move (2).</u> <img height=20px src="images/icons/move.png">
 
@@ -74,7 +77,7 @@ Cliquer en ayant une image sélectionnée la pose, cliquer sur une image sans en
 
 <center>
 <img height=200px src="images/readme/app_move.png">
-
+   
 *Exemple d'utilisation en mode Move. L'image est ici déplacée à gauche, en suivant le curseur.*
 </center>
 
@@ -84,9 +87,11 @@ Le mode *Select* permet de sélectionner une seconde image.
 
 Cliquer sur une image différente de celle en sélection pendant ce mode superpose l'une sur l'autre.
 
+<center>
 <img height=200px src="images/readme/app_select.png">
 
 *Exemple d'utilisation en mode Select. Les images `plus.png` et `cross.png` ont été chargées, agrandies deux fois, déplacées et superposées.*
+</center>
 
 ## 5. <u>Mode Draw (4).</u> <img height=20px src="images/icons/draw.png">
 
@@ -100,22 +105,29 @@ Ce mode est lié à un crayon, définit par :
 
 - **son mode** : par défaut, il faut cliquer sur chaque pixel pour le modifier. La touche `*` permet d'alterner ce mode avec un autre, où chaque pixel sous la souris est modifié. Cela permet de dessiner plus rapidement.
 
+<center>
 <img height=200px src="images/readme/app_draw.png">
 
 *Exemple d'utilisation en mode Draw. On a écrit "Hello!" sur en haut, et fait une rature au centre.*
+</center>
 
 ## 6. <u>Mode Erase (5).</u> <img height=20px src="images/icons/erase.png">
 
 Le mode *Erase* est similaire sur de nombreux points avec le mode Draw. En particulier, la gomme possède aussi une taille et un mode modifiable de la même manière. Elle applique systématiquement la couleur transparente sur les pixels rencontrés.
 
+<center>
 <img height=200px src="images/readme/app_erase.png">
 
 *Exemple d'utilisation en mode Draw. On a gommé la rature.*
+</center>
 
 ### 7. <u>Mode Eyedropper (6).</u> <img height=20px src="images/icons/eyedropper.png">
 
 Le mode *Eyedropper* permet de sélectionner la couleur du pixel cliqué.
 
+<center>
 <img height=200px src="images/readme/app_eyedropper.png">
 
 *Exemple d'utilisation en mode Eyedropper. On a sélectionné certaines couleurs du dessin, puis on a dessiné sur ce qui a été gommé pour combler le trou.*
+</center>
+<center>
