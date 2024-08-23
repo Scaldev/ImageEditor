@@ -33,7 +33,7 @@ On peut passer au mode `Command` en cliquant dans le rectangle de l'invité de c
 <center>
 <img height=200px src="images/readme/app_command.png">
 
-*Exemple d'utilisation de la console. Appuyer sur Entrée chargement l'image `meadow.png`.*
+*Exemple d'utilisation de la console. Appuyer sur Entrée charge l'image `meadow.png`.*
 </center>
 
 ## 2. <u>Mode Edit (1).</u> <img height=20px src="images/icons/edit.png">
